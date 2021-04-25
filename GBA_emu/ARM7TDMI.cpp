@@ -48,9 +48,21 @@ ARM7TDMI::ARM7TDMI() {
 		{{"EORS", &a::EOR, &a::m1_IMM}},
 		{{"SUB", &a::SUB, &a::m1_IMM}},
 		{{"SUBS", &a::SUB, &a::m1_IMM}},
+		{{"RSB", &a::RSB, &a::m1_IMM}},
+		{{"RSBS", &a::RSB, &a::m1_IMM}},
+		{{"ADD", &a::ADD, &a::m1_IMM}}, //28
+		
 	};
+	
 }
 
 ARM7TDMI::~ARM7TDMI() {
 
 }
+
+/*uint32_t ARM7TDMI::ADD() {
+	if conditionPassed() {
+		if (cpsr.S == 1 && Rd)
+	}
+	return 0;
+}*/

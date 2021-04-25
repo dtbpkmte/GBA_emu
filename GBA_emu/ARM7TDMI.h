@@ -86,15 +86,15 @@ public:
 	union {
 		struct
 		{
-			unsigned N : 1;
-			unsigned Z : 1;
-			unsigned C : 1;
-			unsigned V : 1;
-			unsigned R : 20;
-			unsigned I : 1;
-			unsigned F : 1;
-			unsigned T : 1;
-			unsigned M : 5;
+			unsigned N : 1; //negative
+			unsigned Z : 1; //zero
+			unsigned C : 1; //carry
+			unsigned V : 1; //oVerflow
+			unsigned R : 20; //reserved
+			unsigned I : 1; //IRQ
+			unsigned F : 1; //FIQ
+			unsigned T : 1; //Thumb
+			unsigned M : 5; //mode
 		};
 
 		uint32_t reg;
