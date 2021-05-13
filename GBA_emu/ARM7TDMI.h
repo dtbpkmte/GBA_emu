@@ -22,6 +22,7 @@ public:
 		bool(ARM7TDMI::* cond) (void) = nullptr;
 	};
 	std::vector<CONDITION> cond_lookup;
+	bool conditionPassed();
 	
 	//addrmodes
 	//Mode 1 - data processing
@@ -75,28 +76,29 @@ public:
 	uint32_t NOP();
 
 	std::array<uint32_t, 12> r;//r0-r12
-	uint32_t sp; //r13 - Stack Pointer
-	uint32_t lr; //r14 - Link Ptr
-	uint32_t pc; //r15 - Prog Counter
+	uint32_t sp = 0; //r13 - Stack Pointer
+	uint32_t lr = 0; //r14 - Link Ptr
+	uint32_t pc = 0; //r15 - Prog Counter
 	//uint32_t cpsr; //Current Prog Status Register
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
-	union {
+	union ProgStatReg {
 		struct
 		{
-			unsigned N : 1; //negative
-			unsigned Z : 1; //zero
-			unsigned C : 1; //carry
-			unsigned V : 1; //oVerflow
-			unsigned R : 20; //reserved
-			unsigned I : 1; //IRQ
-			unsigned F : 1; //FIQ
-			unsigned T : 1; //Thumb
-			unsigned M : 5; //mode
+			uint32_t N : 1; //negative
+			uint32_t Z : 1; //zero
+			uint32_t C : 1; //carry
+			uint32_t V : 1; //oVerflow
+			uint32_t R : 20; //reserved
+			uint32_t I : 1; //IRQ
+			uint32_t F : 1; //FIQ
+			uint32_t T : 1; //Thumb
+			uint32_t M : 5; //mode
 		};
 
 		uint32_t reg;
-	} cpsr;
+	};
 
+	ProgStatReg cpsr;
 	uint32_t opcode = 0x0000;
 
 	struct INSTRUCTION {
@@ -106,7 +108,6 @@ public:
 	};
 	std::vector<std::vector<INSTRUCTION>> lookup;
 
-	bool conditionPassed();
 
 };
 

@@ -279,8 +279,78 @@ ARM7TDMI::~ARM7TDMI() {
 
 }
 
+//condition code
 bool ARM7TDMI::conditionPassed() {
 	return cond_lookup[((opcode & (0b1111 << 28)) >> 28)].cond;
 }
 
+bool ARM7TDMI::EQ() {
+	return ARM7TDMI::cpsr.Z == 1;
+}
+
+bool ARM7TDMI::NE() {
+	return ARM7TDMI::cpsr.Z == 0;
+}
+
+bool ARM7TDMI::CS() {
+	return ARM7TDMI::cpsr.C == 1;
+}
+
+bool ARM7TDMI::CC() {
+	return ARM7TDMI::cpsr.C == 0;
+}
+
+bool ARM7TDMI::MI() {
+	return ARM7TDMI::cpsr.N == 1;
+}
+
+bool ARM7TDMI::PL() {
+	return ARM7TDMI::cpsr.N == 0;
+}
+
+bool ARM7TDMI::VS() {
+	return ARM7TDMI::cpsr.V == 1;
+}
+
+bool ARM7TDMI::VC() {
+	return ARM7TDMI::cpsr.V == 0;
+}
+
+bool ARM7TDMI::HI() {
+	return ARM7TDMI::cpsr.C == 1 && ARM7TDMI::cpsr.Z == 0;
+}
+
+bool ARM7TDMI::LS() {
+	return ARM7TDMI::cpsr.C == 0 || ARM7TDMI::cpsr.Z == 1;
+}
+
+bool ARM7TDMI::GE() {
+	return ARM7TDMI::cpsr.N == ARM7TDMI::cpsr.V;
+}
+
+bool ARM7TDMI::LT() {
+	return ARM7TDMI::cpsr.N != ARM7TDMI::cpsr.V;
+}
+
+bool ARM7TDMI::GT() {
+	return ARM7TDMI::cpsr.Z == 0 && (ARM7TDMI::cpsr.N == ARM7TDMI::cpsr.V);
+}
+
+bool ARM7TDMI::LE() {
+	return ARM7TDMI::cpsr.Z == 1 || (ARM7TDMI::cpsr.N != ARM7TDMI::cpsr.V);
+}
+
+bool ARM7TDMI::AL() {
+	return true;
+}
+
+bool ARM7TDMI::NV() {
+	return false;
+}
+
+//addressing modes
+//Mode 1
+uint32_t ARM7TDMI::m1_IMM() {
+	return 0;
+}
 
