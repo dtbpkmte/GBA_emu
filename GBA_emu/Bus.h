@@ -1,6 +1,6 @@
 #pragma once
 #include "ARM7TDMI.h"
-#include "LR35902.h"
+//#include "LR35902.h"
 
 #include <array>
 
@@ -12,7 +12,7 @@ public:
 
 public:
 	ARM7TDMI armCpu;
-	LR35902 sharpCpu;
+	//LR35902 sharpCpu;
 
 	std::array<uint32_t, 32768> iwram;
 	std::array<uint16_t, 262144> ewram;

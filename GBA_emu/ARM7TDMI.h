@@ -60,12 +60,9 @@ public:
 	//Load/store
 	uint32_t LDR(); uint32_t LDRB(); uint32_t LDRBT(); uint32_t LDRT();
 	uint32_t LDRH(); uint32_t LDRSB(); uint32_t LDRSH();
-	uint32_t LDMIB(); uint32_t LDMIA(); uint32_t LDMDB();
-	uint32_t LDMDA();
 	uint32_t LDM_1(); uint32_t LDM_2(); uint32_t LDM_3();
 	uint32_t STR(); uint32_t STRT(); uint32_t STRB(); uint32_t STRBT();
-	uint32_t STRH(); uint32_t STMIB(); uint32_t STMIA(); uint32_t STMDB();
-	uint32_t STMDA(); uint32_t STM_1(); uint32_t STM_2();
+	uint32_t STRH(); uint32_t STM_1(); uint32_t STM_2();
 	//Swap
 	uint32_t SWP(); uint32_t SWPB();
 	//Coprocessor
@@ -100,7 +97,7 @@ public:
 		uint32_t reg;
 	} cpsr;
 
-	
+	uint32_t opcode = 0x0000;
 
 	struct INSTRUCTION {
 		std::string name = "";
