@@ -143,11 +143,13 @@
     <ClCompile Include="Bus.cpp" />
     <ClCompile Include="LR35902.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ARM7TDMI.h" />
     <ClInclude Include="Bus.h" />
     <ClInclude Include="LR35902.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
