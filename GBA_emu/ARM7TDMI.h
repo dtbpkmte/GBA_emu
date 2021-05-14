@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <bitset>
 
 #include "Utils.h"
 
@@ -24,7 +25,7 @@ public:
 		bool(ARM7TDMI::* cond) (void) = nullptr;
 	};
 	std::vector<CONDITION> cond_lookup;
-	bool conditionPassed(uint32_t condition);
+	bool conditionPassed();
 	
 	//addrmodes
 	//Mode 1 - data processing
@@ -118,5 +119,9 @@ public:
 	uint32_t shifter_carry_out;
 
 	uint32_t addr;
+
+	//mode 4
+	uint32_t start_addr;
+	uint32_t end_addr;
 };
 

@@ -311,8 +311,8 @@ void ARM7TDMI::writeRegister(uint8_t n, uint32_t data) {
 }
 
 //condition code
-bool ARM7TDMI::conditionPassed(uint32_t condition) {
-	return cond_lookup[condition].cond;
+bool ARM7TDMI::conditionPassed() {
+	return cond_lookup[(opcode >> 28) & 0b1111].cond;
 }
 
 bool ARM7TDMI::EQ() {
@@ -632,7 +632,7 @@ uint32_t ARM7TDMI::m2_PIM() {
 	else {
 		addr = Rn - offset_12;
 	}
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
 	}
 	return 0;
@@ -646,7 +646,7 @@ uint32_t ARM7TDMI::m2_PRG() {
 	else {
 		addr = Rn - Rm;
 	}
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
 	}
 	return 0;
@@ -683,7 +683,7 @@ uint32_t ARM7TDMI::m2_PSR() {
 	else {
 		addr = Rn - index;
 	}
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
 	}
 	return 0;
@@ -691,7 +691,7 @@ uint32_t ARM7TDMI::m2_PSR() {
 uint32_t ARM7TDMI::m2_IMP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	addr = Rn;
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		uint32_t offset_12 = opcode & 0xfff;
 		if (((opcode >> 23) & 0x1) == 1) {
 			writeRegister((opcode >> 16) & 0xf, Rn + offset_12);
@@ -705,7 +705,7 @@ uint32_t ARM7TDMI::m2_IMP() {
 uint32_t ARM7TDMI::m2_RGP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	addr = Rn;
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		uint32_t Rm = readRegister(opcode & 0xf);
 		if (((opcode >> 23) & 0x1) == 1) {
 			writeRegister((opcode >> 16) & 0xf, Rn + Rm);
@@ -744,7 +744,7 @@ uint32_t ARM7TDMI::m2_SRP() {
 		break;
 	}
 	
-	if (conditionPassed((opcode >> 28) & 0b1111)) {
+	if (conditionPassed()) {
 		if (((opcode >> 23) & 0x1) == 1) {
 			writeRegister((opcode >> 16) & 0xf, Rn + index);
 		}
@@ -755,3 +755,125 @@ uint32_t ARM7TDMI::m2_SRP() {
 	return 0;
 }
 
+//Mode 3
+uint32_t ARM7TDMI::m3_IMO() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
+	if (((opcode >> 23) & 0x1) == 1) {
+		addr = Rn + offset_8;
+	}
+	else {
+		addr = Rn - offset_8;
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m3_RGO() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (((opcode >> 23) & 0x1) == 1) {
+		addr = Rn + Rm;
+	}
+	else {
+		addr = Rn - Rm;
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m3_PIM() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
+	if (((opcode >> 23) & 0x1) == 1) {
+		addr = Rn + offset_8;
+	}
+	else {
+		addr = Rn - offset_8;
+	}
+	if (conditionPassed()) {
+		writeRegister((opcode >> 16) & 0xf, addr);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m3_PRG() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (((opcode >> 23) & 0x1) == 1) {
+		addr = Rn + Rm;
+	}
+	else {
+		addr = Rn - Rm;
+	}
+	if (conditionPassed()) {
+		writeRegister((opcode >> 16) & 0xf, addr);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m3_IMP() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	addr = Rn;
+	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
+	
+	if (conditionPassed()) {
+		if (((opcode >> 23) & 0x1) == 1) {
+			addr = Rn + offset_8;
+		}
+		else {
+			addr = Rn - offset_8;
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m3_RGP() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint32_t Rm = readRegister(opcode & 0xf);
+	addr = Rn;
+	if (conditionPassed()) {
+		if (((opcode >> 23) & 0x1) == 1) {
+			addr = Rn + Rm;
+		}
+		else {
+			addr = Rn - Rm;
+		}
+	}
+	return 0;
+}
+
+//Mode 4
+uint32_t ARM7TDMI::m4_IA() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	start_addr = Rn;
+	end_addr = Rn + (num_set_bits * 4) - 4;
+	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
+		writeRegister((opcode >> 16) & 0xf, Rn + num_set_bits * 4);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m4_IB() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	start_addr = Rn + 4;
+	end_addr = Rn + (num_set_bits * 4);
+	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
+		writeRegister((opcode >> 16) & 0xf, Rn + num_set_bits * 4);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m4_DA() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	start_addr = Rn - (num_set_bits * 4) + 4;
+	end_addr = Rn;
+	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
+		writeRegister((opcode >> 16) & 0xf, Rn - num_set_bits * 4);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::m4_DB() {
+	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	start_addr = Rn - (num_set_bits * 4);
+	end_addr = Rn - 4;
+	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
+		writeRegister((opcode >> 16) & 0xf, Rn - num_set_bits * 4);
+	}
+	return 0;
+}
