@@ -24,7 +24,7 @@ public:
 		bool(ARM7TDMI::* cond) (void) = nullptr;
 	};
 	std::vector<CONDITION> cond_lookup;
-	bool conditionPassed();
+	bool conditionPassed(uint32_t condition);
 	
 	//addrmodes
 	//Mode 1 - data processing
@@ -77,12 +77,14 @@ public:
 	//nothing
 	uint32_t NOP();
 
+public:
 	std::array<uint32_t, 12> r;//r0-r12
 	uint32_t sp = 0; //r13 - Stack Pointer
 	uint32_t lr = 0; //r14 - Link Ptr
 	uint32_t pc = 0; //r15 - Prog Counter
 
 	uint32_t readRegister(uint8_t n);
+	void writeRegister(uint8_t n, uint32_t data);
 
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {
@@ -114,5 +116,7 @@ public:
 
 	uint32_t shifter_operand;
 	uint32_t shifter_carry_out;
+
+	uint32_t addr;
 };
 
