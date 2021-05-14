@@ -4,6 +4,8 @@
 #include <vector>
 #include <array>
 
+#include "Utils.h"
+
 class ARM7TDMI
 {
 public:
@@ -79,26 +81,28 @@ public:
 	uint32_t sp = 0; //r13 - Stack Pointer
 	uint32_t lr = 0; //r14 - Link Ptr
 	uint32_t pc = 0; //r15 - Prog Counter
-	//uint32_t cpsr; //Current Prog Status Register
+
+	uint32_t readRegister(uint8_t n);
+
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {
 		struct
 		{
-			uint32_t N : 1; //negative
-			uint32_t Z : 1; //zero
-			uint32_t C : 1; //carry
-			uint32_t V : 1; //oVerflow
+			uint32_t M : 5;  //mode
+			uint32_t T : 1;  //Thumb
+			uint32_t F : 1;  //FIQ
+			uint32_t I : 1;  //IRQ
 			uint32_t R : 20; //reserved
-			uint32_t I : 1; //IRQ
-			uint32_t F : 1; //FIQ
-			uint32_t T : 1; //Thumb
-			uint32_t M : 5; //mode
+			uint32_t V : 1;  //oVerflow
+			uint32_t C : 1;  //carry
+			uint32_t Z : 1;  //zero
+			uint32_t N : 1;  //negative
 		};
 
 		uint32_t reg;
 	};
 
-	ProgStatReg cpsr;
+	ProgStatReg cpsr; //Current Prog Status Register
 	uint32_t opcode = 0x0000;
 
 	struct INSTRUCTION {
@@ -108,6 +112,7 @@ public:
 	};
 	std::vector<std::vector<INSTRUCTION>> lookup;
 
-
+	uint32_t shifter_operand;
+	uint32_t shifter_carry_out;
 };
 
