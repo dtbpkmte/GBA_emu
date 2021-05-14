@@ -279,65 +279,81 @@ ARM7TDMI::~ARM7TDMI() {
 
 }
 
+//register helpers
+uint32_t ARM7TDMI::readRegister(uint8_t n) {
+	if (n <= 12) {
+		return r[n];
+	}
+	else if (n == 13) {
+		return sp;
+	}
+	else if (n == 14) {
+		return lr;
+	}
+	else if (n == 15) {
+		return pc;
+	}
+}
+
 //condition code
 bool ARM7TDMI::conditionPassed() {
 	return cond_lookup[((opcode & (0b1111 << 28)) >> 28)].cond;
 }
 
 bool ARM7TDMI::EQ() {
-	return ARM7TDMI::cpsr.Z == 1;
+	return cpsr.Z == 1;
 }
 
 bool ARM7TDMI::NE() {
-	return ARM7TDMI::cpsr.Z == 0;
+	return cpsr.Z == 0;
 }
 
 bool ARM7TDMI::CS() {
-	return ARM7TDMI::cpsr.C == 1;
+	return cpsr.C == 1;
 }
 
 bool ARM7TDMI::CC() {
-	return ARM7TDMI::cpsr.C == 0;
+	return cpsr.C == 0;
 }
 
 bool ARM7TDMI::MI() {
-	return ARM7TDMI::cpsr.N == 1;
+	return cpsr.N == 1;
 }
 
 bool ARM7TDMI::PL() {
-	return ARM7TDMI::cpsr.N == 0;
+	return cpsr.N == 0;
 }
 
 bool ARM7TDMI::VS() {
-	return ARM7TDMI::cpsr.V == 1;
+	return cpsr.V == 1;
 }
 
 bool ARM7TDMI::VC() {
-	return ARM7TDMI::cpsr.V == 0;
+	return cpsr.V == 0;
 }
 
 bool ARM7TDMI::HI() {
-	return ARM7TDMI::cpsr.C == 1 && ARM7TDMI::cpsr.Z == 0;
+	return cpsr.C == 1 && cpsr.Z == 0;
 }
 
 bool ARM7TDMI::LS() {
-	return ARM7TDMI::cpsr.C == 0 || ARM7TDMI::cpsr.Z == 1;
+	return cpsr.C == 0 || cpsr.Z == 1;
 }
 
 bool ARM7TDMI::GE() {
-	return ARM7TDMI::cpsr.N == ARM7TDMI::cpsr.V;
+	return cpsr.N == cpsr.V;
 }
 
 bool ARM7TDMI::LT() {
-	return ARM7TDMI::cpsr.N != ARM7TDMI::cpsr.V;
+	return cpsr.N != cpsr.V;
 }
 
 bool ARM7TDMI::GT() {
-	return ARM7TDMI::cpsr.Z == 0 && (ARM7TDMI::cpsr.N == ARM7TDMI::cpsr.V);
+	return cpsr.Z == 0 && (cpsr.N == cpsr.V);
 }
 
 bool ARM7TDMI::LE() {
-	return ARM7TDMI::cpsr.Z == 1 || (ARM7TDMI::cpsr.N != ARM7TDMI::cpsr.V);
+	return cpsr.Z == 1 || (cpsr.N != cpsr.V);
 }
 
 bool ARM7TDMI::AL() {
@@ -351,6 +367,182 @@ bool ARM7TDMI::NV() {
 //addressing modes
 //Mode 1
 uint32_t ARM7TDMI::m1_IMM() {
+	uint32_t rotate_imm = (opcode >> 8) & 0xf;
+	uint32_t immed_8 = (opcode & 0xff);
+	if (rotate_imm == 0) {
+		shifter_carry_out = cpsr.C;
+	}
+	else {
+		shifter_operand = rotateRight(immed_8, rotate_imm * 2);
+		shifter_carry_out = shifter_operand >> 31;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_REG() {
+	shifter_operand = readRegister(opcode & 0b1111);
+	shifter_carry_out = cpsr.C;
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_LLI() {
+	uint32_t shift_imm = (opcode >> 7) & 0b11111;
+	uint32_t Rm = readRegister(opcode & 0b1111);
+	if (shift_imm == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = cpsr.C;
+	}
+	else {
+		shifter_operand = Rm << shift_imm;
+		shifter_carry_out = (Rm >> (32 - shift_imm)) & 0x1;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_LLR() {
+	//uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+	uint32_t Rs_LSB = readRegister((opcode >> 8) & 0xf) & 0xff; //least significant byte of Rs
+	uint32_t Rm = readRegister(opcode & 0xf);
+
+	if (Rs_LSB == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = cpsr.C;
+	}
+	else if (Rs_LSB < 32) {
+		shifter_operand = Rm << Rs_LSB;
+		shifter_carry_out = (Rm >> (32 - Rs_LSB)) & 0x1;
+	}
+	else if (Rs_LSB == 32) {
+		shifter_operand = 0;
+		shifter_carry_out = Rm & 0x1;
+	}
+	else {
+		shifter_operand = 0;
+		shifter_carry_out = 0;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_LRI() {
+	uint32_t Rm = readRegister(opcode & 0xf);
+	uint32_t shift_imm = (opcode >> 7) & 0b11111;
+	if (shift_imm == 0) {
+		shifter_operand = 0;
+		shifter_carry_out = Rm >> 31;
+	}
+	else {
+		shifter_operand = Rm >> shift_imm;
+		shifter_carry_out = (Rm >> (shift_imm - 1)) & 0x1;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_LRR() {
+	//uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+	uint32_t Rs_LSB = readRegister((opcode >> 8) & 0xf) & 0xff; //least significant byte of Rs
+	uint32_t Rm = readRegister(opcode & 0xf);
+
+	if (Rs_LSB == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = cpsr.C;
+	}
+	else if (Rs_LSB < 32) {
+		shifter_operand = Rm >> Rs_LSB;
+		shifter_carry_out = (Rm >> (Rs_LSB - 1)) & 0x1;
+	}
+	else if (Rs_LSB == 32) {
+		shifter_operand = 0;
+		shifter_carry_out = Rm >> 31;
+	}
+	else {
+		shifter_operand = 0;
+		shifter_carry_out = 0;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_ARI() {
+	uint32_t shift_imm = (opcode >> 7) & 0b11111;
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (shift_imm == 0) {
+		if (Rm >> 31 == 0) {
+			shifter_operand = 0;
+		}
+		else {
+			shifter_operand = 0xffffffff;
+		}
+		shifter_carry_out = Rm >> 31;
+	}
+	else {
+		//shifter_operand = (Rm >> 31 == 0) ? (Rm >> shift_imm) 
+										  //: (Rm >> shift_imm) | ~(~(uint32_t)0 >> shift_imm); //arithmetic shift
+		shifter_operand = arithmeticShift(Rm, shift_imm);
+		shifter_carry_out = (Rm >> (shift_imm - 1)) & 0x1;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_ARR() {
+	uint32_t Rs_LSB = readRegister((opcode >> 8) & 0xf) & 0xff; //least significant byte of Rs
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (Rs_LSB == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = cpsr.C;
+	}
+	else if (Rs_LSB < 32) {
+		//shifter_operand = (Rm >> 31 == 0) ? (Rm >> Rs_LSB)
+		//								  : (Rm >> Rs_LSB) | ~(~(uint32_t)0 >> Rs_LSB); //arithmetic shift
+		shifter_operand = arithmeticShift(Rm, Rs_LSB);
+		shifter_carry_out = (Rm >> (Rs_LSB - 1)) & 0x1;
+	}
+	else {
+		if (Rm >> 31 == 0) {
+			shifter_operand = 0;
+		}
+		else {
+			shifter_operand = 0xffffffff;
+		}
+		shifter_carry_out = Rm >> 31;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_RRI() {
+	uint32_t shift_imm = (opcode >> 7) & 0b11111;
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (shift_imm == 0) {
+		//this is RRX. Should I write return m1_RRX() ?
+	}
+	else {
+		shifter_operand = rotateRight(Rm, shift_imm);
+		shifter_carry_out = Rm >> (shift_imm - 1);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_RRR() {
+	uint32_t Rs_LSB = readRegister((opcode >> 8) & 0xf) & 0xff; //least significant byte of Rs
+	uint32_t Rs_4_0 = Rs_LSB & 0b11111;
+	uint32_t Rm = readRegister(opcode & 0xf);
+	if (Rs_LSB == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = cpsr.C;
+	}
+	else if (Rs_4_0 == 0) {
+		shifter_operand = Rm;
+		shifter_carry_out = Rm >> 31;
+	}
+	else {
+		shifter_operand = rotateRight(Rm, Rs_4_0);
+		shifter_carry_out = Rm >> (Rs_4_0 - 1);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::m1_RRX() {
+	uint32_t Rm = readRegister(opcode & 0xf);
+	shifter_operand = (Rm >> 1) | (cpsr.C << 31);
+	shifter_carry_out = Rm & 0x1;
 	return 0;
 }
 
