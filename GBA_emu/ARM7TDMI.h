@@ -60,7 +60,7 @@ public:
 	uint32_t TST(); uint32_t TEQ(); uint32_t AND(); 
 	uint32_t EOR(); uint32_t ORR(); uint32_t BIC();
 	//Branch
-	uint32_t B();	uint32_t BL();	uint32_t BX();
+	uint32_t B();	uint32_t BX();
 	//Load/store
 	uint32_t LDR(); uint32_t LDRB(); uint32_t LDRBT(); uint32_t LDRT();
 	uint32_t LDRH(); uint32_t LDRSB(); uint32_t LDRSH();
@@ -79,13 +79,27 @@ public:
 	uint32_t NOP();
 
 public:
-	std::array<uint32_t, 12> r;//r0-r12
+	std::array<uint32_t, 12> r; //r0-r12
 	uint32_t sp = 0; //r13 - Stack Pointer
 	uint32_t lr = 0; //r14 - Link Ptr
 	uint32_t pc = 0; //r15 - Prog Counter
 
-	uint32_t readRegister(uint8_t n);
-	void writeRegister(uint8_t n, uint32_t data);
+	std::array<uint32_t, 5> r_fiq; //banked registers of fiq mode
+	std::array<uint32_t, 5> sp_banked; //banked r13, access by modes 2-6
+	std::array<uint32_t, 5> lr_banked; //banked r14, access by modes 2-6
+	
+	/*Modes:
+		0 - User
+		1 - System
+		2 - svc
+		3 -	abt
+		4 - und
+		5 - irq
+		6 - fiq*/
+	uint8_t mode = 0;
+
+	uint32_t readRegister(uint32_t n);
+	void writeRegister(uint32_t n, uint32_t data);
 
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {
@@ -106,6 +120,11 @@ public:
 	};
 
 	ProgStatReg cpsr; //Current Prog Status Register
+
+	std::array<ProgStatReg, 5> spsr; //banked spsr, access by modes 2-6
+	ProgStatReg getSPSR();
+	void setSPSR(uint32_t data); //set the whole 32-bit spsr, not individual bit
+
 	uint32_t opcode = 0x0000;
 
 	struct INSTRUCTION {

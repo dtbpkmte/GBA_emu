@@ -188,22 +188,22 @@ ARM7TDMI::ARM7TDMI() {
 		{{"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}},
 		{{"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}, {"B", &a::B, &a::XXX}},
 		//B0
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
-		{{"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}, {"BL", &a::BL, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
+		{{"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}, {"BL", &a::B, &a::XXX}},
 		//BF
 		//Add Multiprocessor Instructions later if needed
 		{{"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}, {"???", &a::NOP, &a::XXX}},
@@ -280,33 +280,65 @@ ARM7TDMI::~ARM7TDMI() {
 }
 
 //register helpers
-uint32_t ARM7TDMI::readRegister(uint8_t n) {
-	if (n <= 12) {
+uint32_t ARM7TDMI::readRegister(uint32_t n) {
+	if (n <= 7) {
 		return r[n];
 	}
+	else if (n <= 12) {
+		if (mode == 6) return r_fiq[n - 8];
+		else return r[n];
+	}
 	else if (n == 13) {
-		return sp;
+		if (mode < 2) return sp;
+		else return sp_banked[mode - 2];
 	}
 	else if (n == 14) {
-		return lr;
+		if (mode < 2) return lr;
+		else return lr_banked[mode - 2];
 	}
 	else if (n == 15) {
 		return pc;
 	}
 }
 
-void ARM7TDMI::writeRegister(uint8_t n, uint32_t data) {
-	if (n <= 12) {
+void ARM7TDMI::writeRegister(uint32_t n, uint32_t data) {
+	if (n <= 7) {
 		r[n] = data;
 	}
+	else if (n <= 12) {
+		if (mode == 6) r_fiq[n - 8] = data;
+		else r[n] = data;
+	}
 	else if (n == 13) {
-		sp = data;
+		if (mode < 2) sp = data;
+		else sp_banked[mode - 2] = data;
 	}
 	else if (n == 14) {
-		lr = data;
+		if (mode < 2) lr = data;
+		else lr_banked[mode - 2] = data;
 	}
 	else if (n == 15) {
 		pc = data;
+	}
+}
+
+ARM7TDMI::ProgStatReg ARM7TDMI::getSPSR() {
+	if (mode > 1) {
+		return spsr[mode - 2];
+	}
+	else {
+		//unpredictable
+		return spsr[0]; //lol, I don't know. It should be unpredictable.
+	}
+}
+
+void ARM7TDMI::setSPSR(uint32_t data) {
+	if (mode > 1) {
+		spsr[mode - 2].reg = data;
+	}
+	else {
+		//unpredictable
+		spsr[0].reg = data; //lol, I don't know. It should be unpredictable.
 	}
 }
 
@@ -839,7 +871,7 @@ uint32_t ARM7TDMI::m3_RGP() {
 //Mode 4
 uint32_t ARM7TDMI::m4_IA() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
 	start_addr = Rn;
 	end_addr = Rn + (num_set_bits * 4) - 4;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
@@ -849,7 +881,7 @@ uint32_t ARM7TDMI::m4_IA() {
 }
 uint32_t ARM7TDMI::m4_IB() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
 	start_addr = Rn + 4;
 	end_addr = Rn + (num_set_bits * 4);
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
@@ -859,7 +891,7 @@ uint32_t ARM7TDMI::m4_IB() {
 }
 uint32_t ARM7TDMI::m4_DA() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
 	start_addr = Rn - (num_set_bits * 4) + 4;
 	end_addr = Rn;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
@@ -869,11 +901,478 @@ uint32_t ARM7TDMI::m4_DA() {
 }
 uint32_t ARM7TDMI::m4_DB() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	uint8_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
+	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
 	start_addr = Rn - (num_set_bits * 4);
 	end_addr = Rn - 4;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
 		writeRegister((opcode >> 16) & 0xf, Rn - num_set_bits * 4);
 	}
 	return 0;
+}
+
+//Instructions
+//Move
+uint32_t ARM7TDMI::MOV() {
+	if (conditionPassed()) {
+		uint32_t Rd_addr = (opcode >> 12) & 0xf;
+		writeRegister(Rd_addr, shifter_operand);
+		uint32_t Rd = readRegister(Rd_addr);
+		
+		if (((opcode >> 20) & 0x1) == 1) {
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::MVN() {
+	if (conditionPassed()) {
+		uint32_t Rd_addr = (opcode >> 12) & 0xf;
+		writeRegister(Rd_addr, ~shifter_operand);
+		uint32_t Rd = readRegister(Rd_addr);
+		if (((opcode >> 20) & 0x1) == 1) {
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::MRS() {
+	if (conditionPassed()) {
+		if ((opcode >> 22) & 0x1) {
+			writeRegister((opcode >> 12) & 0xf, getSPSR().reg);
+		}
+		else {
+			writeRegister((opcode >> 12) & 0xf, cpsr.reg);
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::MSR() {
+	if (conditionPassed()) {
+		uint32_t operand = 0;
+		
+		if ((opcode >> 25) & 0x1) {
+			uint32_t immed_8 = (opcode & 0xff);
+			uint32_t rotate_imm = (opcode >> 8) & 0xf;
+			operand = rotateRight(immed_8, rotate_imm * 2);
+		}
+		else {
+			operand = readRegister(opcode & 0xf);
+		}
+		if (((opcode >> 22) & 0x1) == 0) {
+			if (((opcode >> 16) & 0x1) && mode > 0) {
+				cpsr.reg &= 0xffffff00;
+				cpsr.reg |= (operand & 0xff);
+			} else if (((opcode >> 17) & 0x1) && mode > 0) {
+				cpsr.reg &= 0xffff00ff;
+				cpsr.reg |= ((operand >> 8) & 0xff) << 8;
+			}
+			else if (((opcode >> 18) & 0x1) && mode > 0) {
+				cpsr.reg &= 0xff00ffff;
+				cpsr.reg |= ((operand >> 16) & 0xff) << 16;
+			}
+			else if (((opcode >> 19) & 0x1) && mode > 0) {
+				cpsr.reg &= 0x00ffffff;
+				cpsr.reg |= ((operand >> 24) & 0xff) << 24;
+			}
+		}
+		else {
+			if (((opcode >> 16) & 0x1) && mode > 0) {
+				setSPSR(getSPSR().reg & 0xffffff00);
+				cpsr.reg |= (operand & 0xff);
+			}
+			else if (((opcode >> 17) & 0x1) && mode > 0) {
+				setSPSR(getSPSR().reg & 0xffff00ff);
+				cpsr.reg |= ((operand >> 8) & 0xff) << 8;
+			}
+			else if (((opcode >> 18) & 0x1) && mode > 0) {
+				setSPSR(getSPSR().reg & 0xff00ffff);
+				cpsr.reg |= ((operand >> 16) & 0xff) << 16;
+			}
+			else if (((opcode >> 19) & 0x1) && mode > 0) {
+				setSPSR(getSPSR().reg & 0x00ffffff);
+				cpsr.reg |= ((operand >> 24) & 0xff) << 24;
+			}
+		}
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::ADD() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn + shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (Rn + shifter_operand) < Rn;
+				cpsr.V = (Rn >> 31) == (shifter_operand >> 31)
+					&& ((Rn + shifter_operand) >> 31) != (Rn >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::ADC() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn + shifter_operand + cpsr.C);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (Rn + shifter_operand + cpsr.C) < Rn || (Rn + shifter_operand + cpsr.C) < shifter_operand;
+				cpsr.V = (Rn >> 31) == (shifter_operand >> 31)
+					  && ((Rn + shifter_operand + cpsr.C) >> 31) != (Rn >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::SUB() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn - shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (Rn >= shifter_operand);
+				cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
+					&& ((Rn - shifter_operand) >> 31) == (shifter_operand >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::SBC() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn - shifter_operand - ~cpsr.C);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (Rn >= shifter_operand + ~cpsr.C);
+				cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
+					&& ((Rn - shifter_operand - ~cpsr.C) >> 31) == (shifter_operand >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::RSB() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, shifter_operand - Rn);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (shifter_operand >= Rn);
+				cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
+					&& ((shifter_operand - Rn) >> 31) == (Rn >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::RSC() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, shifter_operand - Rn - ~cpsr.C);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = (Rd == 0);
+				cpsr.C = (shifter_operand >= Rn + ~cpsr.C);
+				cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
+					&& ((shifter_operand - Rn - ~cpsr.C) >> 31) == (Rn >> 31);
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::MUL() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+		writeRegister((opcode >> 16) & 0xf, Rm * Rs);
+		uint32_t Rd = readRegister((opcode >> 16) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = Rd >> 31;
+			cpsr.Z = (Rd == 0);
+			//maybe this architecture version needs to modify C
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::MLA() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+		uint32_t Rn = readRegister((opcode >> 12) & 0xf);
+		writeRegister((opcode >> 16) & 0xf, Rm * Rs + Rn);
+		uint32_t Rd = readRegister((opcode >> 16) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = Rd >> 31;
+			cpsr.Z = (Rd == 0);
+			//maybe this architecture version needs to modify C&V
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::UMULL() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+
+		uint64_t mul = (uint64_t) Rm * (uint64_t) Rs;
+		uint32_t RdLo = (mul & 0xffffffff);
+		uint32_t RdHi = (mul >> 32);
+
+		writeRegister((opcode >> 16) & 0xf, RdHi);
+		writeRegister((opcode >> 12) & 0xf, RdLo);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = RdHi >> 31;
+			cpsr.Z = RdHi == 0 && RdLo == 0;
+			//maybe this architecture version needs to modify C
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::UMLAL() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+
+		uint64_t mul = (uint64_t)Rm * (uint64_t)Rs;
+		uint32_t RdLo = (mul & 0xffffffff) + readRegister((opcode >> 12) & 0xf);
+		uint32_t RdHi = (mul >> 32) + readRegister((opcode >> 16) & 0xf) + (RdLo < (mul & 0xffffffff));
+
+		writeRegister((opcode >> 16) & 0xf, RdHi);
+		writeRegister((opcode >> 12) & 0xf, RdLo);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = RdHi >> 31;
+			cpsr.Z = RdHi == 0 && RdLo == 0;
+			//maybe this architecture version needs to modify C
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::SMULL() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+
+		uint64_t mul = (uint64_t)Rm * (uint64_t)Rs;
+		uint32_t RdLo = (mul & 0xffffffff);
+		uint32_t RdHi = (mul >> 32);
+
+		writeRegister((opcode >> 16) & 0xf, RdHi);
+		writeRegister((opcode >> 12) & 0xf, RdLo);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = RdHi >> 31;
+			cpsr.Z = RdHi == 0 && RdLo == 0;
+			//maybe this architecture version needs to modify C
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::SMLAL() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t Rs = readRegister((opcode >> 8) & 0xf);
+
+		uint64_t mul = (uint64_t)Rm * (uint64_t)Rs;
+		uint32_t RdLo = (mul & 0xffffffff) + readRegister((opcode >> 12) & 0xf);
+		uint32_t RdHi = (mul >> 32) + readRegister((opcode >> 16) & 0xf) + (RdLo < (mul & 0xffffffff));
+
+		writeRegister((opcode >> 16) & 0xf, RdHi);
+		writeRegister((opcode >> 12) & 0xf, RdLo);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			cpsr.N = RdHi >> 31;
+			cpsr.Z = RdHi == 0 && RdLo == 0;
+			//maybe this architecture version needs to modify C
+			//but idk
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::CMP() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t alu_out = Rn - shifter_operand;
+		cpsr.N = alu_out >> 31;
+		cpsr.Z = alu_out == 0;
+		cpsr.C = Rn >= shifter_operand;
+		cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
+			&& ((Rn - shifter_operand) >> 31) == (shifter_operand >> 31);
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::CMN() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t alu_out = Rn + shifter_operand;
+		cpsr.N = alu_out >> 31;
+		cpsr.Z = alu_out == 0;
+		cpsr.C = (Rn + shifter_operand) < Rn;
+		cpsr.V = (Rn >> 31) == (shifter_operand >> 31)
+			&& ((Rn + shifter_operand) >> 31) != (Rn >> 31);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::TST() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t alu_out = Rn & shifter_operand;
+		cpsr.N = alu_out >> 31;
+		cpsr.Z = alu_out == 0;
+		cpsr.C = shifter_carry_out;
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::TEQ() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t alu_out = Rn ^ shifter_operand;
+		cpsr.N = alu_out >> 31;
+		cpsr.Z = alu_out == 0;
+		cpsr.C = shifter_carry_out;
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::AND() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn & shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = Rd == 0;
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::EOR() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn ^ shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = Rd == 0;
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::ORR() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn | shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = Rd == 0;
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+uint32_t ARM7TDMI::BIC() {
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		writeRegister((opcode >> 12) & 0xf, Rn & ~shifter_operand);
+		uint32_t Rd = readRegister((opcode >> 12) & 0xf);
+		if (((opcode >> 20) & 0x1) == 1) { //if S==1
+			if (Rd == pc) {
+				cpsr = getSPSR();
+			}
+			else {
+				cpsr.N = Rd >> 31;
+				cpsr.Z = Rd == 0;
+				cpsr.C = shifter_carry_out;
+			}
+		}
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::B() {
+	if (conditionPassed()) {
+		uint32_t sign_extended = ((opcode >> 23) & 0x1) == 0 ? (opcode & 0xffffff) : (0xff << 24) | (opcode & 0xffffff);
+		if (((opcode >> 24) & 0x1) == 1) writeRegister(14, addr); //TO-FIX: address of next instruction actually
+		pc += (sign_extended << 2);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::BX() {
+	if (conditionPassed()) {
+		uint32_t Rm = readRegister(opcode & 0xf);
+		cpsr.T = Rm & 0x1;
+		pc = Rm & 0xfffffffe;
+	}
 }
