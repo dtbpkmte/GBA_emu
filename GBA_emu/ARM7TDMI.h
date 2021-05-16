@@ -7,14 +7,21 @@
 
 #include "Utils.h"
 
+class Bus;
+
 class ARM7TDMI
 {
 public:
 	ARM7TDMI();
 	~ARM7TDMI();
 
-public:
+	Bus* bus = nullptr;
+	void ConnectBus(Bus* n) { bus = n; }
 
+	uint32_t read(uint32_t a);
+	void write(uint32_t a, uint32_t data);
+
+public:
 	//cond
 	bool EQ(); bool NE(); bool CS(); bool CC(); bool MI();
 	bool PL(); bool VS(); bool VC(); bool HI(); bool LS();
@@ -49,16 +56,21 @@ public:
 
 	//ARM instructions
 	//Move
-	uint32_t MOV(); uint32_t MVN(); uint32_t MRS(); uint32_t MSR();
+	uint32_t MOV(); uint32_t MVN(); 
+	uint32_t MRS(); uint32_t MSR();
 	//Arithmetic
-	uint32_t ADD(); uint32_t ADC(); uint32_t SUB(); uint32_t SBC();
-	uint32_t RSB(); uint32_t RSC(); uint32_t MUL(); uint32_t MLA();
+	uint32_t ADD(); uint32_t ADC(); 
+	uint32_t SUB(); uint32_t SBC();
+	uint32_t RSB(); uint32_t RSC(); 
+	//Logical
+	uint32_t CMP(); uint32_t CMN();
+	uint32_t TST(); uint32_t TEQ(); 
+	uint32_t AND(); uint32_t EOR(); 
+	uint32_t ORR(); uint32_t BIC();
+	//Multiply
+	uint32_t MUL(); uint32_t MLA();
 	uint32_t UMULL(); uint32_t UMLAL();
 	uint32_t SMULL(); uint32_t SMLAL();
-	uint32_t CMP(); uint32_t CMN();
-	//Logical
-	uint32_t TST(); uint32_t TEQ(); uint32_t AND(); 
-	uint32_t EOR(); uint32_t ORR(); uint32_t BIC();
 	//Branch
 	uint32_t B();	uint32_t BX();
 	//Load/store
@@ -125,7 +137,9 @@ public:
 	ProgStatReg getSPSR();
 	void setSPSR(uint32_t data); //set the whole 32-bit spsr, not individual bit
 
+	uint32_t prefetch = 0;
 	uint32_t opcode = 0x0000;
+	uint32_t cycles = 0;
 
 	struct INSTRUCTION {
 		std::string name = "";
@@ -137,10 +151,11 @@ public:
 	uint32_t shifter_operand;
 	uint32_t shifter_carry_out;
 
-	uint32_t addr;
+	//mode 2 & 3
+	uint32_t ls_addr;
 
 	//mode 4
-	uint32_t start_addr;
-	uint32_t end_addr;
+	uint32_t ls_start_addr;
+	uint32_t ls_end_addr;
 };
 

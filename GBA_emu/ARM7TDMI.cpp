@@ -279,6 +279,9 @@ ARM7TDMI::~ARM7TDMI() {
 
 }
 
+//bus comm
+
+
 //register helpers
 uint32_t ARM7TDMI::readRegister(uint32_t n) {
 	if (n <= 7) {
@@ -472,7 +475,7 @@ uint32_t ARM7TDMI::m1_LLR() {
 		shifter_operand = 0;
 		shifter_carry_out = 0;
 	}
-	return 0;
+	return 1; //additional cycle
 }
 
 uint32_t ARM7TDMI::m1_LRI() {
@@ -510,7 +513,7 @@ uint32_t ARM7TDMI::m1_LRR() {
 		shifter_operand = 0;
 		shifter_carry_out = 0;
 	}
-	return 0;
+	return 1;
 }
 
 uint32_t ARM7TDMI::m1_ARI() {
@@ -556,7 +559,7 @@ uint32_t ARM7TDMI::m1_ARR() {
 		}
 		shifter_carry_out = Rm >> 31;
 	}
-	return 0;
+	return 1;
 }
 
 uint32_t ARM7TDMI::m1_RRI() {
@@ -603,10 +606,10 @@ uint32_t ARM7TDMI::m2_IMO() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t offset_12 = opcode & 0xfff;
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + offset_12;
+		ls_addr = Rn + offset_12;
 	}
 	else {
-		addr = Rn - offset_12;
+		ls_addr = Rn - offset_12;
 	}
 	return 0;
 }
@@ -614,10 +617,10 @@ uint32_t ARM7TDMI::m2_RGO() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + Rm;
+		ls_addr = Rn + Rm;
 	}
 	else {
-		addr = Rn - Rm;
+		ls_addr = Rn - Rm;
 	}
 	return 0;
 }
@@ -648,10 +651,10 @@ uint32_t ARM7TDMI::m2_SRO() {
 			break;
 	}
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + index;
+		ls_addr = Rn + index;
 	}
 	else {
-		addr = Rn - index;
+		ls_addr = Rn - index;
 	}
 	return 0;
 }
@@ -659,13 +662,13 @@ uint32_t ARM7TDMI::m2_PIM() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t offset_12 = opcode & 0xfff;
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + offset_12;
+		ls_addr = Rn + offset_12;
 	}
 	else {
-		addr = Rn - offset_12;
+		ls_addr = Rn - offset_12;
 	}
 	if (conditionPassed()) {
-		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
+		writeRegister((opcode >> 16) & 0xf, ls_addr); //write back into Rn
 	}
 	return 0;
 }
@@ -673,13 +676,13 @@ uint32_t ARM7TDMI::m2_PRG() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + Rm;
+		ls_addr = Rn + Rm;
 	}
 	else {
-		addr = Rn - Rm;
+		ls_addr = Rn - Rm;
 	}
 	if (conditionPassed()) {
-		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
+		writeRegister((opcode >> 16) & 0xf, ls_addr); //write back into Rn
 	}
 	return 0;
 }
@@ -710,19 +713,19 @@ uint32_t ARM7TDMI::m2_PSR() {
 		break;
 	}
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + index;
+		ls_addr = Rn + index;
 	}
 	else {
-		addr = Rn - index;
+		ls_addr = Rn - index;
 	}
 	if (conditionPassed()) {
-		writeRegister((opcode >> 16) & 0xf, addr); //write back into Rn
+		writeRegister((opcode >> 16) & 0xf, ls_addr); //write back into Rn
 	}
 	return 0;
 }
 uint32_t ARM7TDMI::m2_IMP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	addr = Rn;
+	ls_addr = Rn;
 	if (conditionPassed()) {
 		uint32_t offset_12 = opcode & 0xfff;
 		if (((opcode >> 23) & 0x1) == 1) {
@@ -736,7 +739,7 @@ uint32_t ARM7TDMI::m2_IMP() {
 }
 uint32_t ARM7TDMI::m2_RGP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	addr = Rn;
+	ls_addr = Rn;
 	if (conditionPassed()) {
 		uint32_t Rm = readRegister(opcode & 0xf);
 		if (((opcode >> 23) & 0x1) == 1) {
@@ -754,7 +757,7 @@ uint32_t ARM7TDMI::m2_SRP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
 	uint32_t index = 0;
-	addr = Rn;
+	ls_addr = Rn;
 	switch (shift)
 	{
 	case 0b00: //LSL
@@ -792,10 +795,10 @@ uint32_t ARM7TDMI::m3_IMO() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + offset_8;
+		ls_addr = Rn + offset_8;
 	}
 	else {
-		addr = Rn - offset_8;
+		ls_addr = Rn - offset_8;
 	}
 	return 0;
 }
@@ -803,10 +806,10 @@ uint32_t ARM7TDMI::m3_RGO() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + Rm;
+		ls_addr = Rn + Rm;
 	}
 	else {
-		addr = Rn - Rm;
+		ls_addr = Rn - Rm;
 	}
 	return 0;
 }
@@ -814,13 +817,13 @@ uint32_t ARM7TDMI::m3_PIM() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + offset_8;
+		ls_addr = Rn + offset_8;
 	}
 	else {
-		addr = Rn - offset_8;
+		ls_addr = Rn - offset_8;
 	}
 	if (conditionPassed()) {
-		writeRegister((opcode >> 16) & 0xf, addr);
+		writeRegister((opcode >> 16) & 0xf, ls_addr);
 	}
 	return 0;
 }
@@ -828,27 +831,27 @@ uint32_t ARM7TDMI::m3_PRG() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
 	if (((opcode >> 23) & 0x1) == 1) {
-		addr = Rn + Rm;
+		ls_addr = Rn + Rm;
 	}
 	else {
-		addr = Rn - Rm;
+		ls_addr = Rn - Rm;
 	}
 	if (conditionPassed()) {
-		writeRegister((opcode >> 16) & 0xf, addr);
+		writeRegister((opcode >> 16) & 0xf, ls_addr);
 	}
 	return 0;
 }
 uint32_t ARM7TDMI::m3_IMP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
-	addr = Rn;
+	ls_addr = Rn;
 	uint32_t offset_8 = ((opcode >> 4) & 0xf0) | (opcode & 0xf);
 	
 	if (conditionPassed()) {
 		if (((opcode >> 23) & 0x1) == 1) {
-			addr = Rn + offset_8;
+			ls_addr = Rn + offset_8;
 		}
 		else {
-			addr = Rn - offset_8;
+			ls_addr = Rn - offset_8;
 		}
 	}
 	return 0;
@@ -856,13 +859,13 @@ uint32_t ARM7TDMI::m3_IMP() {
 uint32_t ARM7TDMI::m3_RGP() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t Rm = readRegister(opcode & 0xf);
-	addr = Rn;
+	ls_addr = Rn;
 	if (conditionPassed()) {
 		if (((opcode >> 23) & 0x1) == 1) {
-			addr = Rn + Rm;
+			ls_addr = Rn + Rm;
 		}
 		else {
-			addr = Rn - Rm;
+			ls_addr = Rn - Rm;
 		}
 	}
 	return 0;
@@ -872,8 +875,8 @@ uint32_t ARM7TDMI::m3_RGP() {
 uint32_t ARM7TDMI::m4_IA() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
-	start_addr = Rn;
-	end_addr = Rn + (num_set_bits * 4) - 4;
+	ls_start_addr = Rn;
+	ls_end_addr = Rn + (num_set_bits * 4) - 4;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
 		writeRegister((opcode >> 16) & 0xf, Rn + num_set_bits * 4);
 	}
@@ -882,8 +885,8 @@ uint32_t ARM7TDMI::m4_IA() {
 uint32_t ARM7TDMI::m4_IB() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
-	start_addr = Rn + 4;
-	end_addr = Rn + (num_set_bits * 4);
+	ls_start_addr = Rn + 4;
+	ls_end_addr = Rn + (num_set_bits * 4);
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
 		writeRegister((opcode >> 16) & 0xf, Rn + num_set_bits * 4);
 	}
@@ -892,8 +895,8 @@ uint32_t ARM7TDMI::m4_IB() {
 uint32_t ARM7TDMI::m4_DA() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
-	start_addr = Rn - (num_set_bits * 4) + 4;
-	end_addr = Rn;
+	ls_start_addr = Rn - (num_set_bits * 4) + 4;
+	ls_end_addr = Rn;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
 		writeRegister((opcode >> 16) & 0xf, Rn - num_set_bits * 4);
 	}
@@ -902,8 +905,8 @@ uint32_t ARM7TDMI::m4_DA() {
 uint32_t ARM7TDMI::m4_DB() {
 	uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 	uint32_t num_set_bits = std::bitset<16>(opcode & 0xffff).count();
-	start_addr = Rn - (num_set_bits * 4);
-	end_addr = Rn - 4;
+	ls_start_addr = Rn - (num_set_bits * 4);
+	ls_end_addr = Rn - 4;
 	if (conditionPassed() && ((opcode >> 21) & 0x1) == 1) {
 		writeRegister((opcode >> 16) & 0xf, Rn - num_set_bits * 4);
 	}
@@ -913,6 +916,7 @@ uint32_t ARM7TDMI::m4_DB() {
 //Instructions
 //Move
 uint32_t ARM7TDMI::MOV() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rd_addr = (opcode >> 12) & 0xf;
 		writeRegister(Rd_addr, shifter_operand);
@@ -921,6 +925,7 @@ uint32_t ARM7TDMI::MOV() {
 		if (((opcode >> 20) & 0x1) == 1) {
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -929,9 +934,10 @@ uint32_t ARM7TDMI::MOV() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::MVN() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rd_addr = (opcode >> 12) & 0xf;
 		writeRegister(Rd_addr, ~shifter_operand);
@@ -939,6 +945,7 @@ uint32_t ARM7TDMI::MVN() {
 		if (((opcode >> 20) & 0x1) == 1) {
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -947,7 +954,7 @@ uint32_t ARM7TDMI::MVN() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::MRS() {
 	if (conditionPassed()) {
@@ -958,7 +965,7 @@ uint32_t ARM7TDMI::MRS() {
 			writeRegister((opcode >> 12) & 0xf, cpsr.reg);
 		}
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::MSR() {
 	if (conditionPassed()) {
@@ -1008,10 +1015,11 @@ uint32_t ARM7TDMI::MSR() {
 			}
 		}
 	}
-	return 0;
+	return 1;
 }
 
 uint32_t ARM7TDMI::ADD() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn + shifter_operand);
@@ -1019,6 +1027,7 @@ uint32_t ARM7TDMI::ADD() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1029,9 +1038,10 @@ uint32_t ARM7TDMI::ADD() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::ADC() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn + shifter_operand + cpsr.C);
@@ -1039,6 +1049,7 @@ uint32_t ARM7TDMI::ADC() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1049,9 +1060,10 @@ uint32_t ARM7TDMI::ADC() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::SUB() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn - shifter_operand);
@@ -1059,6 +1071,7 @@ uint32_t ARM7TDMI::SUB() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1069,9 +1082,10 @@ uint32_t ARM7TDMI::SUB() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::SBC() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn - shifter_operand - ~cpsr.C);
@@ -1079,6 +1093,7 @@ uint32_t ARM7TDMI::SBC() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1089,9 +1104,10 @@ uint32_t ARM7TDMI::SBC() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::RSB() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, shifter_operand - Rn);
@@ -1099,6 +1115,7 @@ uint32_t ARM7TDMI::RSB() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1109,9 +1126,10 @@ uint32_t ARM7TDMI::RSB() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::RSC() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, shifter_operand - Rn - ~cpsr.C);
@@ -1119,6 +1137,7 @@ uint32_t ARM7TDMI::RSC() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1129,7 +1148,7 @@ uint32_t ARM7TDMI::RSC() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::MUL() {
 	if (conditionPassed()) {
@@ -1143,8 +1162,9 @@ uint32_t ARM7TDMI::MUL() {
 			//maybe this architecture version needs to modify C
 			//but idk
 		}
+		return 1 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::MLA() {
 	if (conditionPassed()) {
@@ -1159,8 +1179,9 @@ uint32_t ARM7TDMI::MLA() {
 			//maybe this architecture version needs to modify C&V
 			//but idk
 		}
+		return 2 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::UMULL() {
 	if (conditionPassed()) {
@@ -1179,8 +1200,9 @@ uint32_t ARM7TDMI::UMULL() {
 			//maybe this architecture version needs to modify C
 			//but idk
 		}
+		return 2 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::UMLAL() {
 	if (conditionPassed()) {
@@ -1199,8 +1221,9 @@ uint32_t ARM7TDMI::UMLAL() {
 			//maybe this architecture version needs to modify C
 			//but idk
 		}
+		return 3 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::SMULL() {
 	if (conditionPassed()) {
@@ -1219,8 +1242,9 @@ uint32_t ARM7TDMI::SMULL() {
 			//maybe this architecture version needs to modify C
 			//but idk
 		}
+		return 2 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::SMLAL() {
 	if (conditionPassed()) {
@@ -1239,8 +1263,9 @@ uint32_t ARM7TDMI::SMLAL() {
 			//maybe this architecture version needs to modify C
 			//but idk
 		}
+		return 3 + getMulIter(Rs);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::CMP() {
 	if (conditionPassed()) {
@@ -1252,7 +1277,7 @@ uint32_t ARM7TDMI::CMP() {
 		cpsr.V = (Rn >> 31) != (shifter_operand >> 31)
 			&& ((Rn - shifter_operand) >> 31) == (shifter_operand >> 31);
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::CMN() {
 	if (conditionPassed()) {
@@ -1264,7 +1289,7 @@ uint32_t ARM7TDMI::CMN() {
 		cpsr.V = (Rn >> 31) == (shifter_operand >> 31)
 			&& ((Rn + shifter_operand) >> 31) != (Rn >> 31);
 	}
-	return 0;
+	return 1;
 }
 
 uint32_t ARM7TDMI::TST() {
@@ -1275,7 +1300,7 @@ uint32_t ARM7TDMI::TST() {
 		cpsr.Z = alu_out == 0;
 		cpsr.C = shifter_carry_out;
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::TEQ() {
 	if (conditionPassed()) {
@@ -1285,9 +1310,10 @@ uint32_t ARM7TDMI::TEQ() {
 		cpsr.Z = alu_out == 0;
 		cpsr.C = shifter_carry_out;
 	}
-	return 0;
+	return 1;
 }
 uint32_t ARM7TDMI::AND() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn & shifter_operand);
@@ -1295,6 +1321,7 @@ uint32_t ARM7TDMI::AND() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1303,9 +1330,10 @@ uint32_t ARM7TDMI::AND() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::EOR() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn ^ shifter_operand);
@@ -1313,6 +1341,7 @@ uint32_t ARM7TDMI::EOR() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1321,9 +1350,10 @@ uint32_t ARM7TDMI::EOR() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::ORR() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn | shifter_operand);
@@ -1331,6 +1361,7 @@ uint32_t ARM7TDMI::ORR() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1339,9 +1370,10 @@ uint32_t ARM7TDMI::ORR() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 uint32_t ARM7TDMI::BIC() {
+	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
 		writeRegister((opcode >> 12) & 0xf, Rn & ~shifter_operand);
@@ -1349,6 +1381,7 @@ uint32_t ARM7TDMI::BIC() {
 		if (((opcode >> 20) & 0x1) == 1) { //if S==1
 			if (Rd == pc) {
 				cpsr = getSPSR();
+				add_cycles = 2;
 			}
 			else {
 				cpsr.N = Rd >> 31;
@@ -1357,16 +1390,16 @@ uint32_t ARM7TDMI::BIC() {
 			}
 		}
 	}
-	return 0;
+	return add_cycles;
 }
 
 uint32_t ARM7TDMI::B() {
 	if (conditionPassed()) {
 		uint32_t sign_extended = ((opcode >> 23) & 0x1) == 0 ? (opcode & 0xffffff) : (0xff << 24) | (opcode & 0xffffff);
-		if (((opcode >> 24) & 0x1) == 1) writeRegister(14, addr); //TO-FIX: address of next instruction actually
+		if (((opcode >> 24) & 0x1) == 1) writeRegister(14, prefetch); 
 		pc += (sign_extended << 2);
 	}
-	return 0;
+	return 3;
 }
 
 uint32_t ARM7TDMI::BX() {
@@ -1375,4 +1408,81 @@ uint32_t ARM7TDMI::BX() {
 		cpsr.T = Rm & 0x1;
 		pc = Rm & 0xfffffffe;
 	}
+	return 3;
+}
+
+uint32_t ARM7TDMI::LDR() {
+	if (conditionPassed()) {
+		uint32_t value = 0;
+		if ((ls_addr & 0b11) == 0b00) {
+			value = read(ls_addr);
+		}
+		else if ((ls_addr & 0b11) == 0b01) {
+			value = rotateRight(read(ls_addr), 8);
+		}
+		else if ((ls_addr & 0b11) == 0b10) {
+			value = rotateRight(read(ls_addr), 16);
+		}
+		else {
+			value = rotateRight(read(ls_addr), 24);
+		}
+
+		if (readRegister((opcode >> 12) & 0xf) == pc) { //Rd == pc
+			pc = value & 0xfffffffc;
+			return 5;
+		}
+		else {
+			writeRegister((opcode >> 12) & 0xf, value);
+			return 3;
+		}
+	}
+	return 1;
+}
+uint32_t ARM7TDMI::LDRB() {
+
+}
+uint32_t ARM7TDMI::LDRBT() {
+
+}
+uint32_t ARM7TDMI::LDRT() {
+
+}
+uint32_t ARM7TDMI::LDRH() {
+
+}
+uint32_t ARM7TDMI::LDRSB() {
+
+}
+uint32_t ARM7TDMI::LDRSH() {
+
+}
+uint32_t ARM7TDMI::LDM_1() {
+
+}
+uint32_t ARM7TDMI::LDM_2() {
+
+}
+uint32_t ARM7TDMI::LDM_3() {
+
+}
+uint32_t ARM7TDMI::STR() {
+
+}
+uint32_t ARM7TDMI::STRT() {
+
+}
+uint32_t ARM7TDMI::STRB() {
+
+}
+uint32_t ARM7TDMI::STRBT() {
+
+}
+uint32_t ARM7TDMI::STRH() {
+
+}
+uint32_t ARM7TDMI::STM_1() {
+
+}
+uint32_t ARM7TDMI::STM_2() {
+
 }
