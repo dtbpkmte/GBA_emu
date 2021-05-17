@@ -18,8 +18,17 @@ public:
 	Bus* bus = nullptr;
 	void ConnectBus(Bus* n) { bus = n; }
 
+	/*
+		Reads from memory in 3 modes: word (32 bit), halfword (16 bit), byte (8bit).
+		Default is word.
+	*/
 	uint32_t read(uint32_t a);
+	uint32_t read(uint32_t a, uint32_t size);
+	uint16_t read(uint16_t a);
+	uint16_t read(uint16_t a, uint16_t size);
 	void write(uint32_t a, uint32_t data);
+	void write(uint32_t a, uint32_t data, uint32_t size);
+	void write(uint16_t a, uint16_t data);
 
 public:
 	//cond
@@ -110,8 +119,10 @@ public:
 		6 - fiq*/
 	uint8_t mode = 0;
 
+	uint32_t readRegister(uint32_t n, uint8_t force_mode);
 	uint32_t readRegister(uint32_t n);
 	void writeRegister(uint32_t n, uint32_t data);
+	void writeRegister(uint32_t n, uint32_t data, uint8_t force_mode);
 
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {

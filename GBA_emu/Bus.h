@@ -14,10 +14,10 @@ public:
 	ARM7TDMI armCpu;
 	//LR35902 sharpCpu;
 
-	std::array<uint32_t, 32768> iwram;
-	std::array<uint16_t, 262144> ewram;
-	std::array<uint32_t, 1024> ioram;
-	std::array<uint32_t, 65536> vram;
+	std::array<uint32_t, 8192> iwram;   //32kB
+	std::array<uint16_t, 131072> ewram;
+	std::array<uint32_t, 256> ioram;
+	std::array<uint32_t, 16384> vram;
 
 public:
 	void    cpuWrite(uint32_t a, uint32_t data);
