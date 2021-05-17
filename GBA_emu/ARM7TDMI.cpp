@@ -1682,14 +1682,49 @@ uint32_t ARM7TDMI::STM_2() {
 }
 
 uint32_t ARM7TDMI::SWP() {
-
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t temp = 0;
+		if ((Rn & 0b11) == 0b00) {
+			temp = read(Rn);
+		}
+		else if ((Rn & 0b11) == 0b01) {
+			temp = rotateRight(read(Rn), 8);
+		} 
+		else if ((Rn & 0b11) == 0b10) {
+			temp = rotateRight(read(Rn), 16);
+		}
+		else {
+			temp = rotateRight(read(Rn), 24);
+		}
+		write(Rn, readRegister((opcode & 0xf)));
+		writeRegister((opcode >> 12) & 0xf, temp);
+		return 4;
+	}
+	return 1;
 }
 uint32_t ARM7TDMI::SWPB() {
-
+	if (conditionPassed()) {
+		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
+		uint32_t Rm = readRegister(opcode & 0xf);
+		uint32_t temp = read(Rn, 8);
+		write(Rn, Rm & 0xff, 8);
+		writeRegister((opcode >> 12) & 0xf, temp);
+		return 4;
+	}
+	return 1;
 }
 
 uint32_t ARM7TDMI::SWI() {
-
+	if (conditionPassed()) {
+		writeRegister(14, prefetch, 2);
+		mode = 2;
+		setSPSR(cpsr.reg);
+		cpsr.M = 0b10011;
+		cpsr.T = 0;
+		cpsr.I = 1;
+		pc = 0x00000008; //fix later
+	}
 }
 
 uint32_t ARM7TDMI::NOP() {
