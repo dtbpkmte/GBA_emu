@@ -18,6 +18,9 @@ public:
 	Bus* bus = nullptr;
 	void ConnectBus(Bus* n) { bus = n; }
 
+	void reset();
+	void clock();
+
 	/*
 		Reads from memory in 3 modes: word (32 bit), halfword (16 bit), byte (8bit).
 		Default is word.
@@ -29,6 +32,8 @@ public:
 	void write(uint32_t a, uint32_t data);
 	void write(uint32_t a, uint32_t data, uint32_t size);
 	void write(uint16_t a, uint16_t data);
+
+	
 
 public:
 	//cond

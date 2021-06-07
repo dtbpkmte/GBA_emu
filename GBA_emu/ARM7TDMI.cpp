@@ -1,6 +1,8 @@
 #include "ARM7TDMI.h"
 #include "Bus.h"
 
+#include <iostream>
+
 ARM7TDMI::ARM7TDMI() {
 	using a = ARM7TDMI;
 	cond_lookup = {
@@ -278,6 +280,29 @@ ARM7TDMI::ARM7TDMI() {
 
 ARM7TDMI::~ARM7TDMI() {
 
+}
+
+void ARM7TDMI::clock() {
+	if (cycles == 0) {
+		opcode = read(pc++); //fetch next opcode and increment pc
+		uint32_t i = (opcode >> 20) & 0xff;
+		cycles = (this->*lookup[i][(opcode >> 4) & 0xf].addrmode)() + 
+					(this->*lookup[i][(opcode >> 4) & 0xf].operate)();
+
+		//log warning if opcode is in coprocessor range
+		if (i >= 0xc0 && i <= 0xef)
+			std::cout << "Warning: opcode in coprocessor range: " << std::hex << i << '\n';
+	}
+	--cycles;
+}
+
+void ARM7TDMI::reset() {
+	cpsr.M = 0b10011; mode = 2;
+	cpsr.T = 0;
+	cpsr.F = 1;
+	cpsr.I = 1;
+
+	pc = 0;
 }
 
 //bus comm
