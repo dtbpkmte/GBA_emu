@@ -40,28 +40,73 @@ public:
 		std::string name;
 		bool(ARM7TDMI::* cond) (void) = nullptr;
 	};
-	std::vector<CONDITION> cond_lookup;
+	std::vector<CONDITION> condition_lookup;
 	bool conditionPassed();
 	
 	//addrmodes
-	//Mode 1 - data processing
-	uint32_t m1_IMM(); uint32_t m1_REG(); uint32_t m1_LLI();
-	uint32_t m1_LLR(); uint32_t m1_LRI(); uint32_t m1_LRR();
-	uint32_t m1_ARI(); uint32_t m1_ARR(); uint32_t m1_RRI();
-	uint32_t m1_RRR(); uint32_t m1_RRX();
+	uint32_t m1_IMM_f(); uint32_t m1_REG_f(); uint32_t m1_LLI_f();
+	uint32_t m1_LLR_f(); uint32_t m1_LRI_f(); uint32_t m1_LRR_f();
+	uint32_t m1_ARI_f(); uint32_t m1_ARR_f(); uint32_t m1_RRI_f();
+	uint32_t m1_RRR_f(); uint32_t m1_RRX_f();
 	//Mode 2 - Load/Store word/unsigned byte
-	uint32_t m2_IMO(); uint32_t m2_RGO(); uint32_t m2_SRO();
-	uint32_t m2_PIM(); uint32_t m2_PRG(); uint32_t m2_PSR();
-	uint32_t m2_IMP(); uint32_t m2_RGP(); uint32_t m2_SRP();
+	uint32_t m2_IMO_f(); uint32_t m2_RGO_f(); uint32_t m2_SRO_f();
+	uint32_t m2_PIM_f(); uint32_t m2_PRG_f(); uint32_t m2_PSR_f();
+	uint32_t m2_IMP_f(); uint32_t m2_RGP_f(); uint32_t m2_SRP_f();
 	//Mode 3 - Misc Load/store
-	uint32_t m3_IMO(); uint32_t m3_RGO(); uint32_t m3_PIM(); 
-	uint32_t m3_PRG(); uint32_t m3_IMP(); uint32_t m3_RGP();
+	uint32_t m3_IMO_f(); uint32_t m3_RGO_f(); uint32_t m3_PIM_f();
+	uint32_t m3_PRG_f(); uint32_t m3_IMP_f(); uint32_t m3_RGP_f();
 	//Mode 4 - Load/store multiple
-	uint32_t m4_IA(); uint32_t m4_IB();
-	uint32_t m4_DA(); uint32_t m4_DB();
-
+	uint32_t m4_IA_f(); uint32_t m4_IB_f();
+	uint32_t m4_DA_f(); uint32_t m4_DB_f();
 	//nothing mode
-	uint32_t XXX();
+	uint32_t XXX_f();
+
+	enum ADDRMODE_TYPE {AM_MODE1, 
+						AM_MODE2,
+						AM_MODE3,
+						AM_MODE4,
+						AM_NOTHING};
+	struct ADDRMODE {
+		ADDRMODE_TYPE type;
+		uint32_t(ARM7TDMI::* addrmode_f) (void) = nullptr;
+	};
+
+	//Mode 1 - data processing
+	ADDRMODE m1_IMM = { AM_MODE1, &ARM7TDMI::m1_IMM_f };
+	ADDRMODE m1_REG = { AM_MODE1, &ARM7TDMI::m1_REG_f };
+	ADDRMODE m1_LLI = { AM_MODE1, &ARM7TDMI::m1_LLI_f };
+	ADDRMODE m1_LLR = { AM_MODE1, &ARM7TDMI::m1_LLR_f };
+	ADDRMODE m1_LRI = { AM_MODE1, &ARM7TDMI::m1_LRI_f };
+	ADDRMODE m1_LRR = { AM_MODE1, &ARM7TDMI::m1_LRR_f };
+	ADDRMODE m1_ARI = { AM_MODE1, &ARM7TDMI::m1_ARI_f };
+	ADDRMODE m1_ARR = { AM_MODE1, &ARM7TDMI::m1_ARR_f };
+	ADDRMODE m1_RRI = { AM_MODE1, &ARM7TDMI::m1_RRI_f };
+	ADDRMODE m1_RRR = { AM_MODE1, &ARM7TDMI::m1_RRR_f };
+	ADDRMODE m1_RRX = { AM_MODE1, &ARM7TDMI::m1_RRX_f };
+	//Mode 2 - Load/Store word/unsigned byte
+	ADDRMODE m2_IMO = { AM_MODE2, &ARM7TDMI::m2_IMO_f };
+	ADDRMODE m2_RGO = { AM_MODE2, &ARM7TDMI::m2_RGO_f };
+	ADDRMODE m2_SRO = { AM_MODE2, &ARM7TDMI::m2_SRO_f };
+	ADDRMODE m2_PIM = { AM_MODE2, &ARM7TDMI::m2_PIM_f };
+	ADDRMODE m2_PRG = { AM_MODE2, &ARM7TDMI::m2_PRG_f };
+	ADDRMODE m2_PSR = { AM_MODE2, &ARM7TDMI::m2_PSR_f };
+	ADDRMODE m2_IMP = { AM_MODE2, &ARM7TDMI::m2_IMP_f };
+	ADDRMODE m2_RGP = { AM_MODE2, &ARM7TDMI::m2_RGP_f };
+	ADDRMODE m2_SRP = { AM_MODE2, &ARM7TDMI::m2_SRP_f };
+	//Mode 3 - Misc Load/store
+	ADDRMODE m3_IMO = { AM_MODE3, &ARM7TDMI::m3_IMO_f };
+	ADDRMODE m3_RGO = { AM_MODE3, &ARM7TDMI::m3_RGO_f };
+	ADDRMODE m3_PIM = { AM_MODE3, &ARM7TDMI::m3_PIM_f };
+	ADDRMODE m3_PRG = { AM_MODE3, &ARM7TDMI::m3_PRG_f };
+	ADDRMODE m3_IMP = { AM_MODE3, &ARM7TDMI::m3_IMP_f };
+	ADDRMODE m3_RGP = { AM_MODE3, &ARM7TDMI::m3_RGP_f };
+	//Mode 4 - Load/store multiple
+	ADDRMODE m4_IA = { AM_MODE4, &ARM7TDMI::m4_IA_f };
+	ADDRMODE m4_IB = { AM_MODE4, &ARM7TDMI::m4_IB_f };
+	ADDRMODE m4_DA = { AM_MODE4, &ARM7TDMI::m4_DA_f };
+	ADDRMODE m4_DB = { AM_MODE4, &ARM7TDMI::m4_DB_f };
+
+	ADDRMODE XXX = { AM_NOTHING, &ARM7TDMI::XXX_f };
 
 	//ARM instructions
 	//Move
@@ -155,10 +200,11 @@ public:
 	struct INSTRUCTION {
 		std::string name = "";
 		uint32_t(ARM7TDMI::* operate) (void) = nullptr;
-		uint32_t(ARM7TDMI::* addrmode) (void) = nullptr;
+		//uint32_t(ARM7TDMI::* addrmode) (void) = nullptr;
+		ADDRMODE *addrmode = nullptr;
 	};
-	std::vector<std::vector<INSTRUCTION>> lookup;
-
+	std::vector<std::vector<INSTRUCTION>> instruction_lookup;
+	
 	uint32_t shifter_operand;
 	uint32_t shifter_carry_out;
 
@@ -168,5 +214,10 @@ public:
 	//mode 4
 	uint32_t ls_start_addr;
 	uint32_t ls_end_addr;
+
+public:
+	void disassembleARM(const std::vector<uint32_t> &mem);
+	std::string disassembleARMInstruction(const uint32_t instruction);
+	std::string parseOperand2(const uint32_t instruction);
 };
 
