@@ -2,7 +2,7 @@
 #include "ARM7TDMI.h"
 //#include "LR35902.h"
 
-#include <array>
+#include <vector>
 
 class Bus
 {
@@ -14,10 +14,10 @@ public:
 	ARM7TDMI armCpu;
 	//LR35902 sharpCpu;
 
-	std::array<uint32_t, 8192> iwram;   //32kB
-	std::array<uint16_t, 131072> ewram;
-	std::array<uint32_t, 256> ioram;
-	std::array<uint32_t, 16384> vram;
+	std::vector<uint32_t> iwram;	//8192 - 32kB
+	std::vector<uint16_t> ewram;	//131072
+	std::vector<uint32_t> ioram;	//256
+	std::vector<uint32_t> vram;		//16384
 
 public:
 	void    cpuWrite(uint32_t a, uint32_t data);

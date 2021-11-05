@@ -2,6 +2,10 @@
 
 Bus::Bus()
 {
+	iwram.reserve(8192);
+	ewram.reserve(131072);
+	ioram.reserve(256);
+	vram.reserve(16384);
 }
 
 Bus::~Bus()
