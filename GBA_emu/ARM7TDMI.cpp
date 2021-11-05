@@ -35,9 +35,9 @@ ARM7TDMI::ARM7TDMI() {
 		{{"MSR", &a::MSR, &XXX},     {"BX", &a::BX, &XXX},       {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},      {"???", &a::NOP, &XXX},     {"STRH", &a::STRH, &m3_PRG}, {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},        {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX}},
 		{{"TEQS", &a::TEQ, &m1_LLI}, {"TEQS", &a::TEQ, &m1_LLR}, {"TEQS", &a::TEQ, &m1_LRI}, {"TEQS", &a::TEQ, &m1_LRR}, {"TEQS", &a::TEQ, &m1_ARI}, {"TEQS", &a::TEQ, &m1_ARR}, {"TEQS", &a::TEQ, &m1_RRI}, {"TEQS", &a::TEQ, &m1_RRR}, {"TEQS", &a::TEQ, &m1_LLI}, {"???", &a::NOP, &XXX},      {"TEQS", &a::TEQ, &m1_LRI}, {"LDRH", &a::LDRH, &m3_PRG}, {"TEQS", &a::TEQ, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_PRG}, {"TEQS", &a::TEQ, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_PRG}},
 		{{"MRS", &a::MRS, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},	  {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"SWPB", &a::SWPB, &XXX},    {"???", &a::NOP, &XXX},     {"STRH", &a::STRH, &m3_IMO}, {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},        {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX}},
-		{{"CMPS", &a::CMP, &m1_LLI}, {"CMPS", &a::CMP, &m1_LLR}, {"CMPS", &a::CMP, &m1_LRI}, {"CMPS", &a::CMP, &m1_LRR}, {"CMPS", &a::CMP, &m1_ARI}, {"CMPS", &a::CMP, &m1_ARR}, {"CMPS", &a::CMP, &m1_RRI}, {"CMPS", &a::CMP, &m1_RRR}, {"CMPS", &a::CMP, &m1_LLI}, {"???", &a::NOP, &XXX},      {"CMPS", &a::CMP, &m1_LRI}, {"LDRH", &a::LDRH, &m3_IMO}, {"CMPS", &a::CMP, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_IMO}, {"CMPS", &a::CMP, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_IMO}},
+		{{"CMP", &a::CMP, &m1_LLI}, {"CMP", &a::CMP, &m1_LLR}, {"CMP", &a::CMP, &m1_LRI}, {"CMP", &a::CMP, &m1_LRR}, {"CMP", &a::CMP, &m1_ARI}, {"CMP", &a::CMP, &m1_ARR}, {"CMP", &a::CMP, &m1_RRI}, {"CMP", &a::CMP, &m1_RRR}, {"CMP", &a::CMP, &m1_LLI}, {"???", &a::NOP, &XXX},      {"CMP", &a::CMP, &m1_LRI}, {"LDRH", &a::LDRH, &m3_IMO}, {"CMP", &a::CMP, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_IMO}, {"CMP", &a::CMP, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_IMO}},
 		{{"MSR", &a::MSR, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},      {"???", &a::NOP, &XXX},     {"STRH", &a::STRH, &m3_PIM}, {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},        {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX}},
-		{{"CMNS", &a::CMN, &m1_LLI}, {"CMNS", &a::CMN, &m1_LLR}, {"CMNS", &a::CMN, &m1_LRI}, {"CMNS", &a::CMN, &m1_LRR}, {"CMNS", &a::CMN, &m1_ARI}, {"CMNS", &a::CMN, &m1_ARR}, {"CMNS", &a::CMN, &m1_RRI}, {"CMNS", &a::CMN, &m1_RRR}, {"CMNS", &a::CMN, &m1_LLI}, {"???", &a::NOP, &XXX},      {"CMNS", &a::CMN, &m1_LRI}, {"LDRH", &a::LDRH, &m3_PIM}, {"CMNS", &a::CMN, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_PIM}, {"CMNS", &a::CMN, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_PIM}},
+		{{"CMN", &a::CMN, &m1_LLI}, {"CMN", &a::CMN, &m1_LLR}, {"CMN", &a::CMN, &m1_LRI}, {"CMN", &a::CMN, &m1_LRR}, {"CMN", &a::CMN, &m1_ARI}, {"CMN", &a::CMN, &m1_ARR}, {"CMN", &a::CMN, &m1_RRI}, {"CMN", &a::CMN, &m1_RRR}, {"CMN", &a::CMN, &m1_LLI}, {"???", &a::NOP, &XXX},      {"CMN", &a::CMN, &m1_LRI}, {"LDRH", &a::LDRH, &m3_PIM}, {"CMN", &a::CMN, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_PIM}, {"CMN", &a::CMN, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_PIM}},
 		{{"ORR", &a::ORR, &m1_LLI},  {"ORR", &a::ORR, &m1_LLR},  {"ORR", &a::ORR, &m1_LRI},  {"ORR", &a::ORR, &m1_LRR},  {"ORR", &a::ORR, &m1_ARI},  {"ORR", &a::ORR, &m1_ARR},  {"ORR", &a::ORR, &m1_RRI},  {"ORR", &a::ORR, &m1_RRR},  {"ORR", &a::ORR, &m1_LLI},  {"???", &a::NOP, &XXX},      {"ORR", &a::ORR, &m1_LRI},  {"STRH", &a::STRH, &m3_RGO}, {"ORR", &a::ORR, &m1_ARI},  {"???", &a::NOP, &XXX},        {"ORR", &a::ORR, &m1_RRI},  {"???", &a::NOP, &XXX}},
 		{{"ORRS", &a::ORR, &m1_LLI}, {"ORRS", &a::ORR, &m1_LLR}, {"ORRS", &a::ORR, &m1_LRI}, {"ORRS", &a::ORR, &m1_LRR}, {"ORRS", &a::ORR, &m1_ARI}, {"ORRS", &a::ORR, &m1_ARR}, {"ORRS", &a::ORR, &m1_RRI}, {"ORRS", &a::ORR, &m1_RRR}, {"ORRS", &a::ORR, &m1_LLI}, {"???", &a::NOP, &XXX},      {"ORRS", &a::ORR, &m1_LRI}, {"LDRH", &a::LDRH, &m3_RGO}, {"ORRS", &a::ORR, &m1_ARI}, {"LDRSB", &a::LDRSB, &m3_RGO}, {"ORRS", &a::ORR, &m1_RRI}, {"LDRSH", &a::LDRSH, &m3_RGO}},
 		{{"MOV", &a::MOV, &m1_LLI},  {"MOV", &a::MOV, &m1_LLR},  {"MOV", &a::MOV, &m1_LRI},  {"MOV", &a::MOV, &m1_LRR},  {"MOV", &a::MOV, &m1_ARI},  {"MOV", &a::MOV, &m1_ARR},  {"MOV", &a::MOV, &m1_RRI},  {"MOV", &a::MOV, &m1_RRR},  {"MOV", &a::MOV, &m1_LLI},  {"???", &a::NOP, &XXX},      {"MOV", &a::MOV, &m1_LRI},  {"STRH", &a::STRH, &m3_PRG}, {"MOV", &a::MOV, &m1_ARI},  {"???", &a::NOP, &XXX},        {"MOV", &a::MOV, &m1_RRI},  {"???", &a::NOP, &XXX}},
@@ -68,9 +68,9 @@ ARM7TDMI::ARM7TDMI() {
 		{{"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},   {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},   {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},     {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM}},
 		{{"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM},  {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM},  {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM},    {"TEQS", &a::TEQ, &m1_IMM}, {"TEQS", &a::TEQ, &m1_IMM}},
 		{{"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},      {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},      {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX},        {"???", &a::NOP, &XXX},     {"???", &a::NOP, &XXX}},
-		{{"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM},  {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM},  {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM},    {"CMPS", &a::CMP, &m1_IMM}, {"CMPS", &a::CMP, &m1_IMM}},
+		{{"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM},  {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM},  {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM},    {"CMP", &a::CMP, &m1_IMM}, {"CMP", &a::CMP, &m1_IMM}},
 		{{"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},   {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},   {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM},     {"MSR", &a::MSR, &m1_IMM},  {"MSR", &a::MSR, &m1_IMM}},
-		{{"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM},  {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM},  {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM},    {"CMNS", &a::CMN, &m1_IMM}, {"CMNS", &a::CMN, &m1_IMM}},
+		{{"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM},  {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM},  {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM},    {"CMN", &a::CMN, &m1_IMM}, {"CMN", &a::CMN, &m1_IMM}},
 		{{"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},   {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},   {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM},     {"ORR", &a::ORR, &m1_IMM},  {"ORR", &a::ORR, &m1_IMM}},
 		{{"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM},  {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM},  {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM},    {"ORRS", &a::ORR, &m1_IMM}, {"ORRS", &a::ORR, &m1_IMM}},
 		{{"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},   {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},   {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM},     {"MOV", &a::MOV, &m1_IMM},  {"MOV", &a::MOV, &m1_IMM}},
@@ -404,6 +404,9 @@ void ARM7TDMI::setSPSR(uint32_t data) {
 	}
 }
 
+std::string ARM7TDMI::getRegisterName(uint32_t num) {
+	return num == 15 ? "SP" : ("R" + std::to_string(num));
+}
 
 //condition code
 bool ARM7TDMI::conditionPassed() {
@@ -1740,76 +1743,183 @@ uint32_t ARM7TDMI::NOP() {
 
 void ARM7TDMI::disassembleARM(const std::vector<uint32_t>& mem)
 {
+	for (uint32_t ins : mem) {
+		std::cout << disassembleARMInstruction(ins) << '\n';
+	}
 }
 
 std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 {
 	uint32_t row = getBits(instruction32, 20, 8); //bits 27-20
 	uint16_t col = getBits(instruction32, 4, 4); //bits 7-4
-	INSTRUCTION instruction = instruction_lookup[row][col];
+	Instruction instruction = instruction_lookup[row][col];
 	CONDITION condition = condition_lookup[getBits(instruction32, 28, 4)];
-	std::string str_instruction;
+	std::ostringstream str_instruction;
 	if (instruction.name == "???") {
-		str_instruction = "Undefined instruction";
+		str_instruction << "Undefined instruction";
 	}
 	else {
+		std::string name = "", suffix = "";
+		switch (instruction.addrmode->group) {
+		case AddrModeGroup::AM_MODE1:
+			if (instruction.name.back() == 'S') {
+				name = instruction.name.substr(0, instruction.name.length() - 1);
+				suffix = "S";
+			}
+			else
+				name = instruction.name;
+			break;
+		case AddrModeGroup::AM_MODE2:
+			if (instruction.name.substr(instruction.name.length() - 2, 2) == "BT") {
+				name = instruction.name.substr(0, instruction.name.length() - 2);
+				suffix = "BT";
+			}
+			else if (instruction.name.back() == 'B' || instruction.name.back() == 'T') {
+				name = instruction.name.substr(0, instruction.name.length() - 1);
+				suffix = instruction.name.back();
+			}
+			else
+				name = instruction.name;
+			break;
+		case AddrModeGroup::AM_MODE3:
+		case AddrModeGroup::AM_MODE4:
+		case AddrModeGroup::AM_NOTHING:
+		default:
+			break;
+		}
 		// instruction name & condition
-		if (instruction.name.back() == 'S')
-			str_instruction += instruction.name.substr(0, instruction.name.length() - 1);
-		else
-			str_instruction += instruction.name;
+		str_instruction << name;
+		
 		// condition field
 		if (condition.name != "AL")
-			str_instruction += condition.name;
+			str_instruction << condition.name;
 
-		str_instruction += ' ';
+		// add suffix
+		str_instruction << suffix << ' ';
 
-		switch (getBits(instruction32, 25, 3)) {
-		case 0b000: //data processing and some misc instructions
-			if (!getBit(instruction32, 7) && !getBit(instruction32, 4)) {
-				// mul or extra load/store
-				if (getBits(instruction32, 22, 6) == 0 && getBits(instruction32, 4, 4) == 0b1001) {
-					// multiply accumulate
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 16, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 0, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 8, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 12, 4));
-				}
-				else if (getBits(instruction32, 23, 5) == 1 && getBits(instruction32, 4, 4) == 0b1001) {
-					// multiply accumulate long
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 12, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 16, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 0, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 8, 4));
-				}
-				else if (getBits(instruction32, 23, 5) == 0b10 && getBits(instruction32, 4, 4) == 0b1001) {
-					// swap
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 12, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 0, 4)) + ", ";
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 16, 4));
-				}
-
+		switch (instruction.addrmode->name) {
+		case AddrModeName::m1_ARI:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
 			}
-			if (getBit(instruction32, 4) == 0) { // imm shift
-				if (getBits(instruction32, 23, 2) == 0b10 &&
-					getBit(instruction32, 20) == 0) { //misc instructions
-
-				}
-				else { //data processing
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 16, 4)); // Rd
-					str_instruction += ',';
-					str_instruction += 'R' + std::to_string(getBits(instruction32, 12, 4)); // Rn - first operand
-					str_instruction += ',';
-					// there could be imm shift here
-					str_instruction += parseOperand2(instruction32);
-				}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", ASR #" << getBits(instruction32, 7, 5);
+			break;
+		case AddrModeName::m1_ARR:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
 			}
-			else { // register shift
-				
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", ASR " << getRegisterName(getBits(instruction32, 8, 4));
+			break;
+		case AddrModeName::m1_IMM:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
 			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", #" << rotateRight(getBits(instruction32, 0, 8), 
+													getBits(instruction32, 8, 4)*2);
+			break;
+		case AddrModeName::m1_LLI:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", LSL #" << getBits(instruction32, 7, 5);
+			break;
+		case AddrModeName::m1_LLR:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", LSL " << getRegisterName(getBits(instruction32, 8, 4));
+			break;
+		case AddrModeName::m1_LRI:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", LSR #" << getBits(instruction32, 7, 5);
+			break;
+		case AddrModeName::m1_LRR:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", LSR " << getRegisterName(getBits(instruction32, 8, 4));
+			break;
+		case AddrModeName::m1_REG:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			break;
+		case AddrModeName::m1_RRI:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", ROR #" << getBits(instruction32, 7, 5);
+			break;
+		case AddrModeName::m1_RRR:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", ROR " << getRegisterName(getBits(instruction32, 8, 4));
+			break;
+		case AddrModeName::m1_RRX:
+			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
+				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+			}
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << ", RRX";
+			break;
+		case AddrModeName::m2_IMO:
+		case AddrModeName::m2_IMP:
+		case AddrModeName::m2_PIM:
+		case AddrModeName::m2_PRG:
+		case AddrModeName::m2_PSR:
+		case AddrModeName::m2_RGO:
+		case AddrModeName::m2_RGP:
+		case AddrModeName::m2_SRO:
+		case AddrModeName::m2_SRP:
+		case AddrModeName::m3_IMO:
+		case AddrModeName::m3_IMP:
+		case AddrModeName::m3_PIM:
+		case AddrModeName::m3_PRG:
+		case AddrModeName::m3_RGO:
+		case AddrModeName::m3_RGP:
+		case AddrModeName::m4_IA:
+		case AddrModeName::m4_IB:
+		case AddrModeName::m4_DA:
+		case AddrModeName::m4_DB:
+		default:
+			break;
 		}
 	}
-	return str_instruction;
+	return str_instruction.str();
 }
 
 std::string ARM7TDMI::parseOperand2(const uint32_t instruction) {

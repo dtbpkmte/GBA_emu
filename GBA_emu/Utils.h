@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <string>
 
 uint32_t rotateRight(uint32_t word, uint32_t n);
 
@@ -24,3 +25,4 @@ uint16_t getBits(uint16_t word, size_t start_idx, size_t n);
 uint32_t getBit(uint32_t word, size_t idx);
 uint16_t getBit(uint16_t word, size_t idx);
 
+bool contains(std::string, std::string);

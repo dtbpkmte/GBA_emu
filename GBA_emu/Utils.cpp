@@ -47,3 +47,7 @@ uint32_t getBit(uint32_t word, size_t idx) {
 uint16_t getBit(uint16_t word, size_t idx) {
 	return getBits(word, idx, 1);
 }
+
+bool contains(std::string s1, std::string s2) {
+	return s1.find(s2) != std::string::npos;
+}

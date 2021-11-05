@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <bitset>
+#include <sstream>
 
 #include "Utils.h"
 
@@ -11,6 +12,16 @@ class Bus;
 
 class ARM7TDMI
 {
+	// addressing mode masks
+	/*const static uint32_t AMASK_MUL = 0x00000090;
+	const static uint32_t AMASK_MUL_LONG = 0x00800090;
+	const static uint32_t AMASK_BRANCH_EXCHANGE = 0x012fff10;
+	const static uint32_t AMASK_SWAP = 0x01000090;
+	const static uint32_t AMASK_HDT_REGOFFSET = 0x000000b0;
+	const static uint32_t AMASK_HDT_IMMOFFSET = 0x004000b0;
+	const static uint32_t AMASK_SDT = 0x000000d0;
+	const static uint32_t AMASK_DP_PSR = 0;*/
+
 public:
 	ARM7TDMI();
 	~ARM7TDMI();
@@ -61,52 +72,63 @@ public:
 	//nothing mode
 	uint32_t XXX_f();
 
-	enum ADDRMODE_TYPE {AM_MODE1, 
+	enum AddrModeGroup { AM_MODE1, 
 						AM_MODE2,
 						AM_MODE3,
 						AM_MODE4,
 						AM_NOTHING};
-	struct ADDRMODE {
-		ADDRMODE_TYPE type;
+
+	enum class AddrModeName
+	{
+		m1_IMM, m1_REG, m1_LLI, m1_LLR, m1_LRI, m1_LRR, m1_ARI, m1_ARR, m1_RRI, m1_RRR, m1_RRX,
+		m2_IMO, m2_RGO, m2_SRO, m2_PIM, m2_PRG, m2_PSR, m2_IMP, m2_RGP, m2_SRP,
+		m3_IMO, m3_RGO, m3_PIM, m3_PRG, m3_IMP, m3_RGP,
+		m4_IA, m4_IB, m4_DA, m4_DB,
+		XXX
+	};
+
+	struct AddrMode {
+		AddrModeName name;
+		AddrModeGroup group;
 		uint32_t(ARM7TDMI::* addrmode_f) (void) = nullptr;
 	};
 
 	//Mode 1 - data processing
-	ADDRMODE m1_IMM = { AM_MODE1, &ARM7TDMI::m1_IMM_f };
-	ADDRMODE m1_REG = { AM_MODE1, &ARM7TDMI::m1_REG_f };
-	ADDRMODE m1_LLI = { AM_MODE1, &ARM7TDMI::m1_LLI_f };
-	ADDRMODE m1_LLR = { AM_MODE1, &ARM7TDMI::m1_LLR_f };
-	ADDRMODE m1_LRI = { AM_MODE1, &ARM7TDMI::m1_LRI_f };
-	ADDRMODE m1_LRR = { AM_MODE1, &ARM7TDMI::m1_LRR_f };
-	ADDRMODE m1_ARI = { AM_MODE1, &ARM7TDMI::m1_ARI_f };
-	ADDRMODE m1_ARR = { AM_MODE1, &ARM7TDMI::m1_ARR_f };
-	ADDRMODE m1_RRI = { AM_MODE1, &ARM7TDMI::m1_RRI_f };
-	ADDRMODE m1_RRR = { AM_MODE1, &ARM7TDMI::m1_RRR_f };
-	ADDRMODE m1_RRX = { AM_MODE1, &ARM7TDMI::m1_RRX_f };
+	AddrMode m1_IMM = { AddrModeName::m1_IMM, AM_MODE1, &ARM7TDMI::m1_IMM_f};
+	AddrMode m1_REG = { AddrModeName::m1_REG, AM_MODE1, &ARM7TDMI::m1_REG_f };
+	AddrMode m1_LLI = { AddrModeName::m1_LLI, AM_MODE1, &ARM7TDMI::m1_LLI_f };
+	AddrMode m1_LLR = { AddrModeName::m1_LLR, AM_MODE1, &ARM7TDMI::m1_LLR_f };
+	AddrMode m1_LRI = { AddrModeName::m1_LRI, AM_MODE1, &ARM7TDMI::m1_LRI_f };
+	AddrMode m1_LRR = { AddrModeName::m1_LRR, AM_MODE1, &ARM7TDMI::m1_LRR_f };
+	AddrMode m1_ARI = { AddrModeName::m1_ARI, AM_MODE1, &ARM7TDMI::m1_ARI_f };
+	AddrMode m1_ARR = { AddrModeName::m1_ARR, AM_MODE1, &ARM7TDMI::m1_ARR_f };
+	AddrMode m1_RRI = { AddrModeName::m1_RRI, AM_MODE1, &ARM7TDMI::m1_RRI_f };
+	AddrMode m1_RRR = { AddrModeName::m1_RRR, AM_MODE1, &ARM7TDMI::m1_RRR_f };
+	AddrMode m1_RRX = { AddrModeName::m1_RRX, AM_MODE1, &ARM7TDMI::m1_RRX_f };
 	//Mode 2 - Load/Store word/unsigned byte
-	ADDRMODE m2_IMO = { AM_MODE2, &ARM7TDMI::m2_IMO_f };
-	ADDRMODE m2_RGO = { AM_MODE2, &ARM7TDMI::m2_RGO_f };
-	ADDRMODE m2_SRO = { AM_MODE2, &ARM7TDMI::m2_SRO_f };
-	ADDRMODE m2_PIM = { AM_MODE2, &ARM7TDMI::m2_PIM_f };
-	ADDRMODE m2_PRG = { AM_MODE2, &ARM7TDMI::m2_PRG_f };
-	ADDRMODE m2_PSR = { AM_MODE2, &ARM7TDMI::m2_PSR_f };
-	ADDRMODE m2_IMP = { AM_MODE2, &ARM7TDMI::m2_IMP_f };
-	ADDRMODE m2_RGP = { AM_MODE2, &ARM7TDMI::m2_RGP_f };
-	ADDRMODE m2_SRP = { AM_MODE2, &ARM7TDMI::m2_SRP_f };
+	AddrMode m2_IMO = { AddrModeName::m2_IMO, AM_MODE2, &ARM7TDMI::m2_IMO_f };
+	AddrMode m2_RGO = { AddrModeName::m2_RGO, AM_MODE2, &ARM7TDMI::m2_RGO_f };
+	AddrMode m2_SRO = { AddrModeName::m2_SRO, AM_MODE2, &ARM7TDMI::m2_SRO_f };
+	AddrMode m2_PIM = { AddrModeName::m2_PIM, AM_MODE2, &ARM7TDMI::m2_PIM_f };
+	AddrMode m2_PRG = { AddrModeName::m2_PRG, AM_MODE2, &ARM7TDMI::m2_PRG_f };
+	AddrMode m2_PSR = { AddrModeName::m2_PSR, AM_MODE2, &ARM7TDMI::m2_PSR_f };
+	AddrMode m2_IMP = { AddrModeName::m2_IMP, AM_MODE2, &ARM7TDMI::m2_IMP_f };
+	AddrMode m2_RGP = { AddrModeName::m2_RGP, AM_MODE2, &ARM7TDMI::m2_RGP_f };
+	AddrMode m2_SRP = { AddrModeName::m2_SRP, AM_MODE2, &ARM7TDMI::m2_SRP_f };
 	//Mode 3 - Misc Load/store
-	ADDRMODE m3_IMO = { AM_MODE3, &ARM7TDMI::m3_IMO_f };
-	ADDRMODE m3_RGO = { AM_MODE3, &ARM7TDMI::m3_RGO_f };
-	ADDRMODE m3_PIM = { AM_MODE3, &ARM7TDMI::m3_PIM_f };
-	ADDRMODE m3_PRG = { AM_MODE3, &ARM7TDMI::m3_PRG_f };
-	ADDRMODE m3_IMP = { AM_MODE3, &ARM7TDMI::m3_IMP_f };
-	ADDRMODE m3_RGP = { AM_MODE3, &ARM7TDMI::m3_RGP_f };
+	AddrMode m3_IMO = { AddrModeName::m3_IMO, AM_MODE3, &ARM7TDMI::m3_IMO_f };
+	AddrMode m3_RGO = { AddrModeName::m3_RGO, AM_MODE3, &ARM7TDMI::m3_RGO_f };
+	AddrMode m3_PIM = { AddrModeName::m3_PIM, AM_MODE3, &ARM7TDMI::m3_PIM_f };
+	AddrMode m3_PRG = { AddrModeName::m3_PRG, AM_MODE3, &ARM7TDMI::m3_PRG_f };
+	AddrMode m3_IMP = { AddrModeName::m3_IMP, AM_MODE3, &ARM7TDMI::m3_IMP_f };
+	AddrMode m3_RGP = { AddrModeName::m3_RGP, AM_MODE3, &ARM7TDMI::m3_RGP_f };
 	//Mode 4 - Load/store multiple
-	ADDRMODE m4_IA = { AM_MODE4, &ARM7TDMI::m4_IA_f };
-	ADDRMODE m4_IB = { AM_MODE4, &ARM7TDMI::m4_IB_f };
-	ADDRMODE m4_DA = { AM_MODE4, &ARM7TDMI::m4_DA_f };
-	ADDRMODE m4_DB = { AM_MODE4, &ARM7TDMI::m4_DB_f };
+	AddrMode m4_IA = { AddrModeName::m4_IA, AM_MODE4, &ARM7TDMI::m4_IA_f };
+	AddrMode m4_IB = { AddrModeName::m4_IB, AM_MODE4, &ARM7TDMI::m4_IB_f };
+	AddrMode m4_DA = { AddrModeName::m4_DA, AM_MODE4, &ARM7TDMI::m4_DA_f };
+	AddrMode m4_DB = { AddrModeName::m4_DB, AM_MODE4, &ARM7TDMI::m4_DB_f };
 
-	ADDRMODE XXX = { AM_NOTHING, &ARM7TDMI::XXX_f };
+	AddrMode XXX = { AddrModeName::XXX, AM_NOTHING, &ARM7TDMI::XXX_f };
 
 	//ARM instructions
 	//Move
@@ -169,6 +191,9 @@ public:
 	void writeRegister(uint32_t n, uint32_t data);
 	void writeRegister(uint32_t n, uint32_t data, uint8_t force_mode);
 
+
+	std::string getRegisterName(uint32_t);
+
 	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {
 		struct
@@ -197,13 +222,13 @@ public:
 	uint32_t opcode = 0x0000;
 	uint32_t cycles = 0;
 
-	struct INSTRUCTION {
+	struct Instruction {
 		std::string name = "";
 		uint32_t(ARM7TDMI::* operate) (void) = nullptr;
 		//uint32_t(ARM7TDMI::* addrmode) (void) = nullptr;
-		ADDRMODE *addrmode = nullptr;
+		AddrMode *addrmode = nullptr;
 	};
-	std::vector<std::vector<INSTRUCTION>> instruction_lookup;
+	std::vector<std::vector<Instruction>> instruction_lookup;
 	
 	uint32_t shifter_operand;
 	uint32_t shifter_carry_out;
