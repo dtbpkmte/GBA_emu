@@ -1759,6 +1759,7 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 		str_instruction << "Undefined instruction";
 	}
 	else {
+		uint32_t tmp = 0; //for convenience
 		std::string name = "", suffix = "";
 		switch (instruction.addrmode->group) {
 		case AddrModeGroup::AM_MODE1:
@@ -1782,135 +1783,208 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 				name = instruction.name;
 			break;
 		case AddrModeGroup::AM_MODE3:
+			if (instruction.name.substr(instruction.name.length() - 2) == "SH" ||
+				instruction.name.substr(instruction.name.length() - 2) == "SB") {
+				name = instruction.name.substr(0, instruction.name.length() - 2);
+				suffix = instruction.name.substr(instruction.name.length() - 2);
+			}
+			else if (instruction.name.back() == 'H' || instruction.name.back() == 'D') {
+				name = instruction.name.substr(0, instruction.name.length() - 1);
+				suffix = instruction.name.back();
+			}
+			else
+				name = instruction.name;
+			break;
 		case AddrModeGroup::AM_MODE4:
+			name = instruction.name.substr(0, instruction.name.length() - 2);
+			suffix = instruction.name.substr(instruction.name.length() - 2);
+			break;
 		case AddrModeGroup::AM_NOTHING:
 		default:
 			break;
 		}
 		// instruction name & condition
 		str_instruction << name;
-		
 		// condition field
 		if (condition.name != "AL")
 			str_instruction << condition.name;
-
 		// add suffix
 		str_instruction << suffix << ' ';
 
-		switch (instruction.addrmode->name) {
-		case AddrModeName::m1_ARI:
+		// process common syntax (Rd, Rn...)
+		switch (instruction.addrmode->group) {
+		case AddrModeGroup::AM_MODE1:
 			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
 				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
 				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
 			}
 			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			break;
+		case AddrModeGroup::AM_MODE2:
+			str_instruction << getRegisterName(getBits(instruction32, 12, 4)); //Rd
+			str_instruction << ", [" << getRegisterName(getBits(instruction32, 16, 4)); //Rn
+			break;
+		case AddrModeGroup::AM_MODE3:
+			str_instruction << getRegisterName(getBits(instruction32, 12, 4)); //Rd
+			str_instruction << ", [" << getRegisterName(getBits(instruction32, 16, 4)); //Rn
+			tmp = (getBits(instruction32, 8, 4) << 4) | getBits(instruction32, 0, 4);
+			break;
+		case AddrModeGroup::AM_MODE4:
+			str_instruction << getRegisterName(getBits(instruction32, 16, 4))
+							<< (getBit(instruction32, 21) ? "!" : "")
+							<< ", {";
+			bool firstReg = true;
+			for (int i = 0; i < 16; ++i) {
+				if (getBit(instruction32, i)) {
+					if (!firstReg) {
+						str_instruction << ", ";
+					}
+					else firstReg = false;
+					str_instruction << getRegisterName(i);
+				}
+			}
+			str_instruction << '}';
+			break;
+		case AddrModeGroup::AM_NOTHING:
+		default:
+			break;
+		}
+
+		switch (instruction.addrmode->name) {
+		case AddrModeName::m1_ARI:
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ASR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_ARR:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ASR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_IMM:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
-			str_instruction << ", #" << rotateRight(getBits(instruction32, 0, 8), 
-													getBits(instruction32, 8, 4)*2);
+			str_instruction << ", #" << rotateRight(getBits(instruction32, 0, 8),
+				getBits(instruction32, 8, 4) * 2);
 			break;
 		case AddrModeName::m1_LLI:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSL #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_LLR:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSL " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_LRI:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_LRR:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_REG:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			break;
 		case AddrModeName::m1_RRI:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ROR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_RRR:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ROR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_RRX:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
-				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
-			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
 			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", RRX";
 			break;
 		case AddrModeName::m2_IMO:
+			if (getBits(instruction32, 0, 12) != 0) {
+				str_instruction << ", #"
+					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< getBits(instruction32, 0, 12) << ']';
+			}
+			break;
 		case AddrModeName::m2_IMP:
+			if (getBits(instruction32, 0, 12) != 0) {
+				str_instruction << "], #"
+					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< getBits(instruction32, 0, 12);
+			}
+			break;
 		case AddrModeName::m2_PIM:
+			if (getBits(instruction32, 0, 12) != 0) {
+				str_instruction << ", #"
+					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< getBits(instruction32, 0, 12) << ']'
+					<< '!';
+			}
+			break;
 		case AddrModeName::m2_PRG:
+			str_instruction << ", "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4)) << ']'
+				<< '!';
+			break;
 		case AddrModeName::m2_PSR:
+			str_instruction << ", "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4))
+				<< ", "
+				<< parseShiftIMM(instruction32) << "]!";
+			break;
 		case AddrModeName::m2_RGO:
+			str_instruction << ", "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4)) << ']';
+			break;
 		case AddrModeName::m2_RGP:
+			str_instruction << ", "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4)) << ']';
+			break;
 		case AddrModeName::m2_SRO:
+			str_instruction << ", "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4))
+				<< ", "
+				<< parseShiftIMM(instruction32) << ']';
+			break;
 		case AddrModeName::m2_SRP:
+			str_instruction << "], "
+				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< getRegisterName(getBits(instruction32, 0, 4)) //Rm
+				<< ", "
+				<< parseShiftIMM(instruction32);
+			break;
 		case AddrModeName::m3_IMO:
+			if (tmp)
+				str_instruction << ", #"
+								<< (getBit(instruction32, 23) ? '+' : '-') << tmp;
+			str_instruction << ']';
+			break;
 		case AddrModeName::m3_IMP:
+			str_instruction << "], #"
+							<< (getBit(instruction32, 23) ? '+' : '-') << tmp;
+			break;
 		case AddrModeName::m3_PIM:
+			str_instruction << ", #"
+							<< (getBit(instruction32, 23) ? '+' : '-') << tmp
+							<< "]!";
+			break;
 		case AddrModeName::m3_PRG:
+			str_instruction << ", "
+							<< (getBit(instruction32, 23) ? '+' : '-') 
+							<< getRegisterName(getBits(instruction32, 0, 4))
+							<< "]!";
+			break;
 		case AddrModeName::m3_RGO:
+			str_instruction << ", "
+							<< (getBit(instruction32, 23) ? '+' : '-') 
+							<< getRegisterName(getBits(instruction32, 0, 4))
+							<< ']';
+			break;
 		case AddrModeName::m3_RGP:
+			str_instruction << "], "
+							<< (getBit(instruction32, 23) ? '+' : '-')
+							<< getRegisterName(getBits(instruction32, 0, 4));
+			break;
 		case AddrModeName::m4_IA:
 		case AddrModeName::m4_IB:
 		case AddrModeName::m4_DA:
@@ -1922,6 +1996,24 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 	return str_instruction.str();
 }
 
-std::string ARM7TDMI::parseOperand2(const uint32_t instruction) {
-	return "";
+std::string ARM7TDMI::parseShiftIMM(const uint32_t instruction32) {
+	std::ostringstream ret;
+	switch (getBits(instruction32, 4, 3)) {
+	case 0b000:
+		ret << "LSL #" << getBits(instruction32, 7, 5);
+		break;
+	case 0b010:
+		ret << "LSR #" << getBits(instruction32, 7, 5);
+		break;
+	case 0b100:
+		ret << "ASR #" << getBits(instruction32, 7, 5);
+		break;
+	case 0b110:
+		if (getBits(instruction32, 7, 5) == 0)
+			ret << "RRX";
+		else
+			ret << "ROR " << getBits(instruction32, 7, 5);
+		break;
+	}
+	return ret.str();
 }
