@@ -243,6 +243,8 @@ public:
 public:
 	void disassembleARM(const std::vector<uint32_t> &mem);
 	std::string disassembleARMInstruction(const uint32_t instruction);
-	std::string parseOperand2(const uint32_t instruction);
+
+private:
+	std::string parseShiftIMM(const uint32_t instruction);
 };
 
