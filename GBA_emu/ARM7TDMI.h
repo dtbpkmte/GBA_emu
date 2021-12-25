@@ -12,16 +12,6 @@ class Bus;
 
 class ARM7TDMI
 {
-	// addressing mode masks
-	/*const static uint32_t AMASK_MUL = 0x00000090;
-	const static uint32_t AMASK_MUL_LONG = 0x00800090;
-	const static uint32_t AMASK_BRANCH_EXCHANGE = 0x012fff10;
-	const static uint32_t AMASK_SWAP = 0x01000090;
-	const static uint32_t AMASK_HDT_REGOFFSET = 0x000000b0;
-	const static uint32_t AMASK_HDT_IMMOFFSET = 0x004000b0;
-	const static uint32_t AMASK_SDT = 0x000000d0;
-	const static uint32_t AMASK_DP_PSR = 0;*/
-
 public:
 	ARM7TDMI();
 	~ARM7TDMI();
@@ -242,7 +232,7 @@ public:
 
 public:
 	void disassembleARM(const std::vector<uint32_t> &mem);
-	std::string disassembleARMInstruction(const uint32_t instruction);
+	std::string disassembleARMInstruction(const uint32_t instruction, const uint32_t addr);
 
 private:
 	std::string parseShiftIMM(const uint32_t instruction);

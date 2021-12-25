@@ -1,17 +1,27 @@
 #include <cstdint>
 #include <iostream>
 #include "Bus.h"
+#include <fstream>
 
 using namespace std;
 
 int main() {
 	Bus GBA_bus;
-	// ADD R1, R2, ASR #2
-	// 1110 0010 1000 0001 0010 0001 0100 0011
-	cout << GBA_bus.armCpu.disassembleARMInstruction(0xe0811142) << std::endl;
-	cout << GBA_bus.armCpu.disassembleARMInstruction(0xe3710002) << std::endl;
-	cout << GBA_bus.armCpu.disassembleARMInstruction(0xe1710102) << std::endl;
-	cout << GBA_bus.armCpu.disassembleARMInstruction(0xe2811003) << std::endl;
-	
+
+	char buffer[16384];
+	std::vector<uint32_t> biosData(16384/sizeof(uint32_t));
+	std::ifstream biosFile;
+
+	biosFile.open("gba_bios.bin", std::ios::in | std::ios::binary);
+	biosFile.read(buffer, 16384);
+	memcpy(&biosData[0], &buffer[0], 16384);
+	/*for (auto i : biosData) {
+		std::cout << std::hex << i << '\n';
+	}*/
+	//for (auto i = 0; i < 16; ++i) {
+	//	std::cout << std::hex << (uint32_t) buffer[i] << '\n';
+	//}
+	GBA_bus.armCpu.disassembleARM(biosData);
+
 	return 0;
 }

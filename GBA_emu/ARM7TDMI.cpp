@@ -1,6 +1,8 @@
 #include "ARM7TDMI.h"
 #include "Bus.h"
 #include <iostream>
+#include <iomanip>
+#include <stdexcept>
 
 //using namespace std;
 
@@ -133,7 +135,10 @@ ARM7TDMI::ARM7TDMI() {
 		{{"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},  {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},   {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},    {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX}},
 		{{"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},  {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},   {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},    {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX}},
 		{{"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_SRO},{"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},   {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},    {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"STRB", &a::STRB, &m2_SRO},  {"???", &a::NOP, &XXX}},
-		{{"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},{"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},   {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},    {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX}},
+		{{"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},{"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},   {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},    {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX},      {"LDRB", &a::LDRB, &m2_SRO},  {"???", &a::NOP, &XXX}},
+		{{"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_PSR},{"???", &a::NOP, &XXX},     {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},   {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},    {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},      {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX},      {"STRB", &a::STRB, &m2_PSR},  {"???", &a::NOP, &XXX}},
+		{{"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_PSR},{"???", &a::NOP, &XXX},     {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},   {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},    {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},      {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX},      {"LDRB", &a::LDRB, &m2_PSR},  {"???", &a::NOP, &XXX}},
+		{{"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_SRO},  {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},   {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},    {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_SRO},    {"???", &a::NOP, &XXX}},
 		{{"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_SRO},  {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},   {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},    {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_SRO},    {"???", &a::NOP, &XXX}},
 		{{"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},  {"???", &a::NOP, &XXX},     {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},   {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},    {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"STR", &a::STR, &m2_PSR},    {"???", &a::NOP, &XXX}},
 		{{"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},  {"???", &a::NOP, &XXX},     {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},   {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},    {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX},      {"LDR", &a::LDR, &m2_PSR},    {"???", &a::NOP, &XXX}},
@@ -355,6 +360,7 @@ uint32_t ARM7TDMI::readRegister(uint32_t n, uint8_t force_mode) {
 	else if (n == 15) {
 		return pc;
 	}
+	else throw std::invalid_argument("Wrong input to readRegister");
 }
 uint32_t ARM7TDMI::readRegister(uint32_t n) {
 	return readRegister(n, mode);
@@ -405,7 +411,13 @@ void ARM7TDMI::setSPSR(uint32_t data) {
 }
 
 std::string ARM7TDMI::getRegisterName(uint32_t num) {
-	return num == 15 ? "SP" : ("R" + std::to_string(num));
+	if (num == 10) return "SL";
+	if (num == 11) return "FP";
+	if (num == 12) return "IP";
+	if (num == 13) return "SP";
+	if (num == 14) return "LR";
+	if (num == 15) return "PC";
+	return "R" + std::to_string(num);
 }
 
 //condition code
@@ -1743,22 +1755,24 @@ uint32_t ARM7TDMI::NOP() {
 
 void ARM7TDMI::disassembleARM(const std::vector<uint32_t>& mem)
 {
-	for (uint32_t ins : mem) {
-		std::cout << disassembleARMInstruction(ins) << '\n';
+	for (auto i = 0; i < mem.size(); ++i) {
+		std::printf("%04X\t%08X\t%s\n", i * 4, mem[i], disassembleARMInstruction(mem[i], i * 4).c_str());
+		/*std::cout << std::setw(8) << std::hex << std::ios::right << mem[i]; 
+		std::cout << '\t' << disassembleARMInstruction(mem[i], i * 4) << '\n';*/
 	}
 }
 
-std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
+std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, const uint32_t addr)
 {
 	uint32_t row = getBits(instruction32, 20, 8); //bits 27-20
-	uint16_t col = getBits(instruction32, 4, 4); //bits 7-4
+	uint32_t col = getBits(instruction32, 4, 4); //bits 7-4
+
 	Instruction instruction = instruction_lookup[row][col];
 	CONDITION condition = condition_lookup[getBits(instruction32, 28, 4)];
 	std::ostringstream str_instruction;
 	if (instruction.name == "???") {
 		str_instruction << "Undefined instruction";
-	}
-	else {
+	} else {
 		uint32_t tmp = 0; //for convenience
 		std::string name = "", suffix = "";
 		switch (instruction.addrmode->group) {
@@ -1800,6 +1814,8 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 			suffix = instruction.name.substr(instruction.name.length() - 2);
 			break;
 		case AddrModeGroup::AM_NOTHING:
+			name = instruction.name;
+			break;
 		default:
 			break;
 		}
@@ -1814,11 +1830,13 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 		// process common syntax (Rd, Rn...)
 		switch (instruction.addrmode->group) {
 		case AddrModeGroup::AM_MODE1:
-			if (!(contains(instruction.name, "CMN") || contains(instruction.name, "CMP") ||
-				contains(instruction.name, "TEQ") || contains(instruction.name, "TST"))) {
+			if (!(name == "CMN" || name == "CMP" ||
+				name == "TEQ" || name == "TST")) {
 				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
 			}
-			str_instruction << getRegisterName(getBits(instruction32, 16, 4));
+			if (!(name == "MOV" || name == "MVN")) {
+				str_instruction << getRegisterName(getBits(instruction32, 16, 4)) << ", ";
+			}
 			break;
 		case AddrModeGroup::AM_MODE2:
 			str_instruction << getRegisterName(getBits(instruction32, 12, 4)); //Rd
@@ -1830,9 +1848,10 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 			tmp = (getBits(instruction32, 8, 4) << 4) | getBits(instruction32, 0, 4);
 			break;
 		case AddrModeGroup::AM_MODE4:
+		{
 			str_instruction << getRegisterName(getBits(instruction32, 16, 4))
-							<< (getBit(instruction32, 21) ? "!" : "")
-							<< ", {";
+				<< (getBit(instruction32, 21) ? "!" : "")
+				<< ", {";
 			bool firstReg = true;
 			for (int i = 0; i < 16; ++i) {
 				if (getBit(instruction32, i)) {
@@ -1844,111 +1863,158 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 				}
 			}
 			str_instruction << '}';
+		}
 			break;
 		case AddrModeGroup::AM_NOTHING:
+			if (name == "B" || name == "BL")
+				str_instruction << "0x" << std::hex
+								<< ((signExtend(getBits(instruction32, 0, 24), 24) << 2) + addr + 8);
+			else if (name == "BX")
+				str_instruction << getRegisterName(getBits(instruction32, 0, 4));
+			else if (name == "MRS") {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4)) << ", ";
+				if (getBit(instruction32, 22))
+					str_instruction << "SPSR";
+				else 
+					str_instruction << "CPSR";
+			}
+			else if (name == "MSR") {
+				if (getBit(instruction32, 22))
+					str_instruction << "SPSR_";
+				else
+					str_instruction << "CPSR_";
+				if (getBit(instruction32, 19)) str_instruction << 'f';
+				if (getBit(instruction32, 18)) str_instruction << 's';
+				if (getBit(instruction32, 17)) str_instruction << 'x';
+				if (getBit(instruction32, 16)) str_instruction << 'c';
+				str_instruction << ", ";
+				if (getBit(instruction32, 25))
+					str_instruction << '#' << rotateRight(getBits(instruction32, 0, 8),
+														getBits(instruction32, 8, 4) * 2);
+				else
+					str_instruction << getRegisterName(getBits(instruction32, 0, 4));
+			}
+			else if (name == "MUL") {
+				str_instruction << getRegisterName(getBits(instruction32, 16, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 0, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 8, 4));
+			}
+			else if (name == "MLA") {
+				str_instruction << getRegisterName(getBits(instruction32, 16, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 0, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 8, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 12, 4));
+			}
+			else if (contains(name, "MUL") || contains(name, "MLA")) {
+				str_instruction << getRegisterName(getBits(instruction32, 12, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 16, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 0, 4))
+					<< ", " << getRegisterName(getBits(instruction32, 8, 4));
+			}
+			break;
 		default:
 			break;
 		}
 
 		switch (instruction.addrmode->name) {
 		case AddrModeName::m1_ARI:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ASR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_ARR:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ASR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_IMM:
-			str_instruction << ", #" << rotateRight(getBits(instruction32, 0, 8),
-				getBits(instruction32, 8, 4) * 2);
+			str_instruction << "#" << rotateRight(getBits(instruction32, 0, 8),
+													getBits(instruction32, 8, 4) * 2);
 			break;
 		case AddrModeName::m1_LLI:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSL #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_LLR:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSL " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_LRI:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_LRR:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", LSR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_REG:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			break;
 		case AddrModeName::m1_RRI:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ROR #" << getBits(instruction32, 7, 5);
 			break;
 		case AddrModeName::m1_RRR:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", ROR " << getRegisterName(getBits(instruction32, 8, 4));
 			break;
 		case AddrModeName::m1_RRX:
-			str_instruction << ", " << getRegisterName(getBits(instruction32, 0, 4));
+			str_instruction << getRegisterName(getBits(instruction32, 0, 4));
 			str_instruction << ", RRX";
 			break;
 		case AddrModeName::m2_IMO:
 			if (getBits(instruction32, 0, 12) != 0) {
 				str_instruction << ", #"
-					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< (getBit(instruction32, 23) ? "" : "-")
 					<< getBits(instruction32, 0, 12) << ']';
 			}
 			break;
 		case AddrModeName::m2_IMP:
 			if (getBits(instruction32, 0, 12) != 0) {
 				str_instruction << "], #"
-					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< (getBit(instruction32, 23) ? "" : "-")
 					<< getBits(instruction32, 0, 12);
 			}
 			break;
 		case AddrModeName::m2_PIM:
 			if (getBits(instruction32, 0, 12) != 0) {
 				str_instruction << ", #"
-					<< (getBit(instruction32, 23) ? '+' : '-')
+					<< (getBit(instruction32, 23) ? "" : "-")
 					<< getBits(instruction32, 0, 12) << ']'
 					<< '!';
 			}
 			break;
 		case AddrModeName::m2_PRG:
 			str_instruction << ", "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4)) << ']'
 				<< '!';
 			break;
 		case AddrModeName::m2_PSR:
 			str_instruction << ", "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4))
 				<< ", "
 				<< parseShiftIMM(instruction32) << "]!";
 			break;
 		case AddrModeName::m2_RGO:
 			str_instruction << ", "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4)) << ']';
 			break;
 		case AddrModeName::m2_RGP:
 			str_instruction << ", "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4)) << ']';
 			break;
 		case AddrModeName::m2_SRO:
 			str_instruction << ", "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4))
 				<< ", "
 				<< parseShiftIMM(instruction32) << ']';
 			break;
 		case AddrModeName::m2_SRP:
 			str_instruction << "], "
-				<< (getBit(instruction32, 23) ? '+' : '-')
+				<< (getBit(instruction32, 23) ? "" : "-")
 				<< getRegisterName(getBits(instruction32, 0, 4)) //Rm
 				<< ", "
 				<< parseShiftIMM(instruction32);
@@ -1956,33 +2022,33 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32)
 		case AddrModeName::m3_IMO:
 			if (tmp)
 				str_instruction << ", #"
-								<< (getBit(instruction32, 23) ? '+' : '-') << tmp;
+								<< (getBit(instruction32, 23) ? "" : "-") << tmp;
 			str_instruction << ']';
 			break;
 		case AddrModeName::m3_IMP:
 			str_instruction << "], #"
-							<< (getBit(instruction32, 23) ? '+' : '-') << tmp;
+							<< (getBit(instruction32, 23) ? "" : "-") << tmp;
 			break;
 		case AddrModeName::m3_PIM:
 			str_instruction << ", #"
-							<< (getBit(instruction32, 23) ? '+' : '-') << tmp
+							<< (getBit(instruction32, 23) ? "" : "-") << tmp
 							<< "]!";
 			break;
 		case AddrModeName::m3_PRG:
 			str_instruction << ", "
-							<< (getBit(instruction32, 23) ? '+' : '-') 
+							<< (getBit(instruction32, 23) ? "" : "-") 
 							<< getRegisterName(getBits(instruction32, 0, 4))
 							<< "]!";
 			break;
 		case AddrModeName::m3_RGO:
 			str_instruction << ", "
-							<< (getBit(instruction32, 23) ? '+' : '-') 
+							<< (getBit(instruction32, 23) ? "" : "-") 
 							<< getRegisterName(getBits(instruction32, 0, 4))
 							<< ']';
 			break;
 		case AddrModeName::m3_RGP:
 			str_instruction << "], "
-							<< (getBit(instruction32, 23) ? '+' : '-')
+							<< (getBit(instruction32, 23) ? "" : "-")
 							<< getRegisterName(getBits(instruction32, 0, 4));
 			break;
 		case AddrModeName::m4_IA:
@@ -2013,6 +2079,8 @@ std::string ARM7TDMI::parseShiftIMM(const uint32_t instruction32) {
 			ret << "RRX";
 		else
 			ret << "ROR " << getBits(instruction32, 7, 5);
+		break;
+	default:
 		break;
 	}
 	return ret.str();
