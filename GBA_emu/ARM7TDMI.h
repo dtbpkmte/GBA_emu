@@ -19,14 +19,15 @@ public:
 	Bus* bus = nullptr;
 	void ConnectBus(Bus* n) { bus = n; }
 
+	void reset();
+	bool clock();
+
 	/*
 		Reads from memory in 3 modes: word (32 bit), halfword (16 bit), byte (8bit).
 		Default is word.
 	*/
-	uint32_t read(uint32_t a);
-	uint32_t read(uint32_t a, uint32_t size);
-	uint16_t read(uint16_t a);
-	uint16_t read(uint16_t a, uint16_t size);
+	uint32_t read(uint32_t a, uint32_t size=32);
+	uint16_t read(uint16_t a, uint16_t size=16);
 	void write(uint32_t a, uint32_t data);
 	void write(uint32_t a, uint32_t data, uint32_t size);
 	void write(uint16_t a, uint16_t data);
@@ -208,14 +209,14 @@ public:
 	ProgStatReg getSPSR();
 	void setSPSR(uint32_t data); //set the whole 32-bit spsr, not individual bit
 
-	uint32_t prefetch = 0;
+	//uint32_t prefetch = 0;
+	uint32_t prefetch = 0x03000000;
 	uint32_t opcode = 0x0000;
 	uint32_t cycles = 0;
 
 	struct Instruction {
 		std::string name = "";
-		uint32_t(ARM7TDMI::* operate) (void) = nullptr;
-		//uint32_t(ARM7TDMI::* addrmode) (void) = nullptr;
+		uint32_t (ARM7TDMI::* operate) (void) = nullptr;
 		AddrMode *addrmode = nullptr;
 	};
 	std::vector<std::vector<Instruction>> instruction_lookup;
@@ -235,6 +236,7 @@ public:
 	std::string disassembleARMInstruction(const uint32_t instruction, const uint32_t addr);
 
 private:
+	Instruction getInstruction(uint32_t opc);
 	std::string parseShiftIMM(const uint32_t instruction);
 };
 

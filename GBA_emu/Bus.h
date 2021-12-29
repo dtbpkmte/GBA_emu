@@ -26,5 +26,8 @@ public:
 public:
 	void reset();
 	void clock();
+
+	void step();
+	void run();
 };
 

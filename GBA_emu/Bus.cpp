@@ -2,10 +2,11 @@
 
 Bus::Bus()
 {
-	iwram.reserve(8192);
-	ewram.reserve(131072);
-	ioram.reserve(256);
-	vram.reserve(16384);
+	armCpu.ConnectBus(this);
+	iwram.resize(8192, 0);
+	ewram.resize(131072, 0);
+	ioram.resize(256, 0);
+	vram.resize(16384, 0);
 }
 
 Bus::~Bus()
@@ -46,4 +47,5 @@ void Bus::reset()
 
 void Bus::clock()
 {
+	armCpu.clock();
 }

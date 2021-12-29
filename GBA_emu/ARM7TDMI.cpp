@@ -4,8 +4,6 @@
 #include <iomanip>
 #include <stdexcept>
 
-//using namespace std;
-
 ARM7TDMI::ARM7TDMI() {
 	using a = ARM7TDMI;
 	condition_lookup = {
@@ -288,12 +286,26 @@ ARM7TDMI::~ARM7TDMI() {
 
 }
 
-//bus comm
-uint32_t ARM7TDMI::read(uint32_t a)
+void ARM7TDMI::reset()
 {
-	return read(a, 32);
+	prefetch = 0;
+}
+// assuming 32bit instructions
+bool ARM7TDMI::clock()
+{
+	if (cycles == 0) {
+		pc = prefetch;
+		opcode = read(pc);
+		cycles += (this->*(getInstruction(opcode).addrmode->addrmode_f))();
+		cycles += (this->*(getInstruction(opcode).operate))();
+		prefetch += sizeof(uint32_t);
+		return true;
+	}
+	--cycles;
+	return false;
 }
 
+//bus comm
 uint32_t ARM7TDMI::read(uint32_t a, uint32_t size)
 {
 	if (size == 32) {
@@ -422,7 +434,7 @@ std::string ARM7TDMI::getRegisterName(uint32_t num) {
 
 //condition code
 bool ARM7TDMI::conditionPassed() {
-	return condition_lookup[(opcode >> 28) & 0b1111].cond;
+	return (this->*(condition_lookup[(opcode >> 28) & 0b1111].cond))();
 }
 
 bool ARM7TDMI::EQ() {
@@ -499,11 +511,11 @@ uint32_t ARM7TDMI::XXX_f() {
 uint32_t ARM7TDMI::m1_IMM_f() {
 	uint32_t rotate_imm = (opcode >> 8) & 0xf;
 	uint32_t immed_8 = (opcode & 0xff);
+	shifter_operand = rotateRight(immed_8, rotate_imm * 2);
 	if (rotate_imm == 0) {
 		shifter_carry_out = cpsr.C;
 	}
 	else {
-		shifter_operand = rotateRight(immed_8, rotate_imm * 2);
 		shifter_carry_out = shifter_operand >> 31;
 	}
 	return 0;
@@ -516,7 +528,6 @@ uint32_t ARM7TDMI::m1_REG_f() {
 }
 
 uint32_t ARM7TDMI::m1_LLI_f() {
-	std::cout << "m1_LLI_f called\n";
 	uint32_t shift_imm = (opcode >> 7) & 0b11111;
 	uint32_t Rm = readRegister(opcode & 0b1111);
 	if (shift_imm == 0) {
@@ -994,11 +1005,11 @@ uint32_t ARM7TDMI::m4_DB_f() {
 uint32_t ARM7TDMI::MOV() {
 	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
-		uint32_t Rd_addr = (opcode >> 12) & 0xf;
+		uint32_t Rd_addr = getBits(opcode, 12, 4);
 		writeRegister(Rd_addr, shifter_operand);
 		uint32_t Rd = readRegister(Rd_addr);
 		
-		if (((opcode >> 20) & 0x1) == 1) {
+		if (getBit(opcode, 20) == 1) {
 			if (Rd_addr == 15) {
 				cpsr = getSPSR();
 				add_cycles = 2;
@@ -1389,7 +1400,6 @@ uint32_t ARM7TDMI::TEQ() {
 	return 1;
 }
 uint32_t ARM7TDMI::AND() {
-	std::cout << "AND is called\n";
 	uint32_t add_cycles = 1;
 	if (conditionPassed()) {
 		uint32_t Rn = readRegister((opcode >> 16) & 0xf);
@@ -1756,6 +1766,7 @@ uint32_t ARM7TDMI::NOP() {
 void ARM7TDMI::disassembleARM(const std::vector<uint32_t>& mem)
 {
 	for (auto i = 0; i < mem.size(); ++i) {
+		if (mem[i] == 0) break;
 		std::printf("%04X\t%08X\t%s\n", i * 4, mem[i], disassembleARMInstruction(mem[i], i * 4).c_str());
 		/*std::cout << std::setw(8) << std::hex << std::ios::right << mem[i]; 
 		std::cout << '\t' << disassembleARMInstruction(mem[i], i * 4) << '\n';*/
@@ -2060,6 +2071,11 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, co
 		}
 	}
 	return str_instruction.str();
+}
+
+ARM7TDMI::Instruction ARM7TDMI::getInstruction(uint32_t opc)
+{
+	return instruction_lookup[getBits(opc, 20, 8)][getBits(opc, 4, 4)];
 }
 
 std::string ARM7TDMI::parseShiftIMM(const uint32_t instruction32) {
