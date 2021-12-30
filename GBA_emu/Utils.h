@@ -29,3 +29,8 @@ uint16_t getBit(uint16_t word, size_t idx);
 * @return true if first string contains second string
 */
 bool contains(std::string, std::string);
+
+std::string padZero(std::string, size_t=32);
+std::string padZero(uint32_t, size_t=32);
+
+std::string n2hexstr(uint32_t n, size_t hex_len=8);

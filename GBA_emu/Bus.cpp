@@ -3,10 +3,11 @@
 Bus::Bus()
 {
 	armCpu.ConnectBus(this);
-	iwram.resize(8192, 0);
-	ewram.resize(131072, 0);
-	ioram.resize(256, 0);
-	vram.resize(16384, 0);
+	bios.resize(4096, 0);
+	iwram.resize(1024, 0);
+	ewram.resize(16384, 0);
+	ioram.resize(32, 0);
+	vram.resize(6144, 0);
 }
 
 Bus::~Bus()
@@ -20,10 +21,7 @@ void Bus::cpuWrite(uint32_t a, uint32_t data)
 uint32_t Bus::cpuRead(uint32_t a, bool bReadOnly)
 {
 	if (a <= 0x3fff) {
-		//BIOS - can't read
-		//idk what to return here
-		//maybe data abort
-		return 0xffffffff;
+		return bios[a/4];
 	}
 	else if (a >= 0x02000000 && a <= 0x0203ffff) {
 		return ewram[(a & 0xfffff)/2];
@@ -43,9 +41,14 @@ uint32_t Bus::cpuRead(uint32_t a, bool bReadOnly)
 
 void Bus::reset()
 {
+	armCpu.reset();
 }
 
 void Bus::clock()
 {
 	armCpu.clock();
+}
+
+void Bus::step() {
+	armCpu.clock(true);
 }

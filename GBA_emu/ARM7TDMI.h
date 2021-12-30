@@ -20,7 +20,7 @@ public:
 	void ConnectBus(Bus* n) { bus = n; }
 
 	void reset();
-	bool clock();
+	bool clock(bool=false);
 
 	/*
 		Reads from memory in 3 modes: word (32 bit), halfword (16 bit), byte (8bit).

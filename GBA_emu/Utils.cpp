@@ -51,3 +51,21 @@ uint16_t getBit(uint16_t word, size_t idx) {
 bool contains(std::string s1, std::string s2) {
 	return s1.find(s2) != std::string::npos;
 }
+
+std::string padZero(std::string s, size_t n) {
+	if (s.length() < n)
+		s.insert(0, n - s.length(), '0');
+	return s;
+}
+
+std::string padZero(uint32_t m, size_t n) {
+	return padZero(std::to_string(m), n);
+}
+
+std::string n2hexstr(uint32_t n, size_t hex_len) {
+	static const char* digits = "0123456789ABCDEF";
+	std::string rc(hex_len, '0');
+	for (size_t i = 0, j = (hex_len - 1) * 4; i < hex_len; ++i, j -= 4)
+		rc[i] = digits[(n >> j) & 0x0f];
+	return rc;
+}

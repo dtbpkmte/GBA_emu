@@ -291,14 +291,15 @@ void ARM7TDMI::reset()
 	prefetch = 0;
 }
 // assuming 32bit instructions
-bool ARM7TDMI::clock()
+bool ARM7TDMI::clock(bool instantly)
 {
 	if (cycles == 0) {
 		pc = prefetch;
 		opcode = read(pc);
 		cycles += (this->*(getInstruction(opcode).addrmode->addrmode_f))();
 		cycles += (this->*(getInstruction(opcode).operate))();
-		prefetch += sizeof(uint32_t);
+		prefetch += sizeof(uint32_t); // fix?
+		if (instantly) cycles = 0;
 		return true;
 	}
 	--cycles;
@@ -370,9 +371,9 @@ uint32_t ARM7TDMI::readRegister(uint32_t n, uint8_t force_mode) {
 		else return lr_banked[force_mode - 2];
 	}
 	else if (n == 15) {
-		return pc;
+		return pc + 8;
 	}
-	else throw std::invalid_argument("Wrong input to readRegister");
+	else throw std::invalid_argument("Wrong input to readRegister: " + std::to_string(n));
 }
 uint32_t ARM7TDMI::readRegister(uint32_t n) {
 	return readRegister(n, mode);
