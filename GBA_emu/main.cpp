@@ -157,7 +157,7 @@ public:
 						bus.armCpu.getRegisterName(i*4+j-1), olc::WHITE, 2);
 				DrawString(j*ADDR_X/4 - REGISTER_WIDTH + 40, 
 						(i*2+1)*CHAR_BOX_HEIGHT+SCREEN_HEIGHT/2 + 5, 
-						padZero(bus.armCpu.readRegister(i*4+j-1), 8), olc::WHITE, 2);
+						n2hexstr(bus.armCpu.readRegister(i*4+j-1), 8), olc::WHITE, 2);
 			}
 		}
 
