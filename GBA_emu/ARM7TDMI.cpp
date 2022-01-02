@@ -298,7 +298,7 @@ bool ARM7TDMI::clock(bool instantly)
 		opcode = read(pc);
 		cycles += (this->*(getInstruction(opcode).addrmode->addrmode_f))();
 		cycles += (this->*(getInstruction(opcode).operate))();
-		prefetch += sizeof(uint32_t); // fix?
+		prefetch += (cpsr.T ? sizeof(uint16_t) : sizeof(uint32_t)); 
 		if (instantly) cycles = 0;
 		return true;
 	}
@@ -353,25 +353,31 @@ void ARM7TDMI::write(uint16_t a, uint16_t data)
 {
 }
 
+void ARM7TDMI::setMode(uint8_t m)
+{
+	mode = m;
+	cpsr.M = modeMap[m]; 
+}
+
 //register helpers
 uint32_t ARM7TDMI::readRegister(uint32_t n, uint8_t force_mode) {
 	if (n <= 7) {
 		return r[n];
 	}
 	else if (n <= 12) {
-		if (force_mode == 6) return r_fiq[n - 8];
+		if (force_mode == 1) return r_fiq[n - 8];
 		else return r[n];
 	}
 	else if (n == 13) {
-		if (force_mode < 2) return sp;
-		else return sp_banked[force_mode - 2];
+		if (force_mode == 0 || force_mode == 6) return sp;
+		else return sp_banked[force_mode - 1];
 	}
 	else if (n == 14) {
-		if (force_mode < 2) return lr;
-		else return lr_banked[force_mode - 2];
+		if (force_mode == 0 || force_mode == 6) return lr;
+		else return lr_banked[force_mode - 1];
 	}
 	else if (n == 15) {
-		return pc + 8;
+		return pc + (cpsr.T ? 4 : 8);
 	}
 	else throw std::invalid_argument("Wrong input to readRegister: " + std::to_string(n));
 }
@@ -384,16 +390,16 @@ void ARM7TDMI::writeRegister(uint32_t n, uint32_t data, uint8_t force_mode) {
 		r[n] = data;
 	}
 	else if (n <= 12) {
-		if (force_mode == 6) r_fiq[n - 8] = data;
+		if (force_mode == 1) r_fiq[n - 8] = data;
 		else r[n] = data;
 	}
 	else if (n == 13) {
-		if (force_mode < 2) sp = data;
-		else sp_banked[force_mode - 2] = data;
+		if (force_mode == 0 || force_mode == 6) sp = data;
+		else sp_banked[force_mode - 1] = data;
 	}
 	else if (n == 14) {
-		if (force_mode < 2) lr = data;
-		else lr_banked[force_mode - 2] = data;
+		if (force_mode == 0 || force_mode == 6) lr = data;
+		else lr_banked[force_mode - 1] = data;
 	}
 	else if (n == 15) {
 		pc = data;
@@ -404,23 +410,20 @@ void ARM7TDMI::writeRegister(uint32_t n, uint32_t data) {
 }
 
 ARM7TDMI::ProgStatReg ARM7TDMI::getSPSR() {
-	if (mode > 1) {
-		return spsr[mode - 2];
-	}
-	else {
-		//unpredictable
-		return spsr[0]; //lol, I don't know. It should be unpredictable.
-	}
+	if (mode > 0 && mode < 6) 
+		return spsr[mode - 1];
+	
+	else 
+		throw std::runtime_error("Bad call of getSPSR");
 }
 
 void ARM7TDMI::setSPSR(uint32_t data) {
-	if (mode > 1) {
-		spsr[mode - 2].reg = data;
+	if (mode > 0 && mode < 6) {
+		spsr[mode - 1].reg = data;
 	}
-	else {
-		//unpredictable
-		spsr[0].reg = data; //lol, I don't know. It should be unpredictable.
-	}
+	else 
+		throw std::runtime_error("Bad call of setSPSR");
+	
 }
 
 std::string ARM7TDMI::getRegisterName(uint32_t num) {
@@ -435,7 +438,9 @@ std::string ARM7TDMI::getRegisterName(uint32_t num) {
 
 //condition code
 bool ARM7TDMI::conditionPassed() {
-	return (this->*(condition_lookup[(opcode >> 28) & 0b1111].cond))();
+	if (!cpsr.T) // ARM mode
+		return (this->*(condition_lookup[(opcode >> 28) & 0b1111].cond))();
+	return (this->*(condition_lookup[getBits(opcode, 8, 4)].cond))();
 }
 
 bool ARM7TDMI::EQ() {
@@ -1761,7 +1766,636 @@ uint32_t ARM7TDMI::SWI() {
 }
 
 uint32_t ARM7TDMI::NOP() {
-	return 1;
+	return 0;
+}
+
+uint32_t ARM7TDMI::B_TH()
+{
+	if (getBits(opcode, 12, 4) == 0b1101) {
+		// form 1
+		if (conditionPassed()) 
+			pc += (signExtend(getBits(opcode, 0, 8), 8) << 1);
+	}
+	else {
+		pc += (signExtend(getBits(opcode, 0, 11), 8) << 1);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::BL_TH()
+{
+	if (getBits(opcode, 13, 3) == 0b111) {
+		uint32_t offset11 = getBits(opcode, 0, 11);
+		if (getBits(opcode, 11, 2) == 0b10) 
+			lr = pc + (signExtend(offset11, 11) << 12);
+		else if (getBits(opcode, 11, 2) == 0b11) {
+			pc = lr + (offset11 << 1);
+			lr = (pc + 2) | (uint32_t) 1;
+		}
+		else if (getBits(opcode, 11, 2) == 0b01) {
+			pc = (lr + (offset11 << 1)) | 0xfffffffc;
+			lr = (pc + 2) | 1;
+			cpsr.T = 0;
+		}
+	}
+	else { // BLX 2
+		lr = (pc + 2) | (uint32_t) 1;
+		cpsr.T = getBit(readRegister(3, 3), 0);
+		pc = getBits(readRegister(3, 3), 1, 31) << 1;
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::BX_TH()
+{
+	cpsr.T = getBit(readRegister(3, 3), 0);
+	pc = getBits(readRegister(3, 3), 1, 31) << 1;
+	return 0;
+}
+
+uint32_t ARM7TDMI::ADC_TH()
+{
+	uint32_t Rd_val = readRegister(getBits(opcode, 0, 3));
+	uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+	uint32_t res = Rd_val + Rm_val + cpsr.C; 
+	writeRegister(getBits(opcode, 0, 3), res);
+	cpsr.N = getBit(res, 31);
+	cpsr.Z = (res == 0);
+	cpsr.V = overflowFrom(Rd_val + Rm_val, cpsr.C);
+	cpsr.C = carryFrom(Rd_val + Rm_val, cpsr.C);
+	return 0;
+}
+
+uint32_t ARM7TDMI::ADD_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	if (getBits(opcode, 9, 7) == 0b0001110) {
+		uint32_t immed3 = getBits(opcode, 6, 3);
+		uint32_t Rn_val = readRegister(getBits(opcode, 3, 3));
+		writeRegister(Rd, Rn_val + immed3);
+		cpsr.C = carryFrom(Rn_val, immed3);
+		cpsr.V = overflowFrom(Rn_val, immed3);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 11, 5) == 0b00110) {
+		uint32_t immed8 = getBits(opcode, 0, 8);
+		writeRegister(Rd, readRegister(Rd) + immed8);
+		cpsr.C = carryFrom(readRegister(Rd), immed8);
+		cpsr.V = overflowFrom(readRegister(Rd), immed8);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 9, 7) == 0b0001100) {
+		uint32_t Rn_val = readRegister(getBits(opcode, 3, 3));
+		uint32_t Rm_val = readRegister(getBits(opcode, 6, 3));
+		writeRegister(Rd, Rn_val + Rm_val);
+		cpsr.C = carryFrom(Rn_val, Rm_val);
+		cpsr.V = overflowFrom(Rn_val, Rm_val);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 9, 7) == 0b0100010) {
+		uint32_t Rm = getBits(opcode, 3, 3);
+		writeRegister(Rd, readRegister(Rd) + readRegister(Rm));
+	}
+	else if (getBits(opcode, 11, 5) == 0b10100) {
+		uint32_t immed8 = getBits(opcode, 0, 8);
+		writeRegister(getBits(opcode, 8, 3), (readRegister(15) & 0xfffffffc) + (immed8 << 2));
+	}
+	else if (getBits(opcode, 11, 5) == 0b10101) {
+		uint32_t immed8 = getBits(opcode, 0, 8);
+		writeRegister(getBits(opcode, 8, 3), readRegister(13) + (immed8 << 2));
+	}
+	else if (getBits(opcode, 9, 7) == 0b1011000) {
+		uint32_t immed7 = getBits(opcode, 0, 7);
+		writeRegister(13, readRegister(13) + (immed7 << 2));
+	}
+	else throw std::runtime_error("Encoding does not match any of SUB");
+
+	return 0;
+}
+
+uint32_t ARM7TDMI::AND_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, readRegister(Rd) & readRegister(getBits(opcode, 3, 3)));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::ASR_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	if (getBits(opcode, 11, 5) == 0b00010) {
+		uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+		uint32_t immed5 = getBits(opcode, 6, 5);
+		if (immed5 == 0) {
+			cpsr.C = getBit(Rm_val, 31);
+			if (cpsr.C)
+				writeRegister(Rd, 0xffffffff);
+			else
+				writeRegister(Rd, 0);
+		}
+		else {
+			cpsr.C = getBit(Rm_val, immed5 - 1);
+			writeRegister(Rd, arithmeticShift(Rm_val, immed5));
+		}
+	} else if (getBits(opcode, 11, 5) == 0b01000) {
+		uint32_t Rs7_0 = getBits(readRegister(getBits(opcode, 3, 3)), 0, 8);
+		if (Rs7_0 == 0) {}
+		else if (Rs7_0 < 32) {
+			cpsr.C = getBit(readRegister(Rd), Rs7_0 - 1);
+			writeRegister(Rd, arithmeticShift(readRegister(Rd), Rs7_0));
+		}
+		else {
+			cpsr.C = getBit(readRegister(Rd), 31);
+			if (cpsr.C)
+				writeRegister(Rd, 0xffffffff);
+			else
+				writeRegister(Rd, 0);
+		}
+	}
+	else throw std::runtime_error("Encoding does not match any of LSL");
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+
+	return 0;
+}
+
+uint32_t ARM7TDMI::BIC_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, readRegister(Rd) & ~readRegister(getBits(opcode, 3, 3)));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::CMN_TH()
+{
+	uint32_t Rn = readRegister(getBits(opcode, 0, 3));
+	uint32_t Rm = readRegister(getBits(opcode, 3, 3));
+	uint32_t alu_out = Rn + Rm;
+	cpsr.N = getBit(alu_out, 31);
+	cpsr.Z = (alu_out == 0);
+	cpsr.C = !borrowFrom(Rn, -Rm);
+	cpsr.V = overflowFrom(Rn, Rm);
+	return 0;
+}
+
+uint32_t ARM7TDMI::CMP_TH()
+{
+	if (getBits(opcode, 11, 5) == 0b00101) {
+		// CMP 1
+		uint32_t immed8 = readRegister(getBits(opcode, 0, 7));
+		uint32_t Rn = readRegister(getBits(opcode, 8, 3));
+		uint32_t alu_out = Rn - immed8;
+		cpsr.N = getBit(alu_out, 31);
+		cpsr.Z = (alu_out == 0);
+		cpsr.C = !borrowFrom(Rn, immed8);
+		cpsr.V = overflowFrom(Rn, -immed8);
+	}
+	else if (getBit(opcode, 10) == 0) {
+		// CMP 2
+		uint32_t Rn = readRegister(getBits(opcode, 0, 3));
+		uint32_t Rm = readRegister(getBits(opcode, 3, 3));
+		uint32_t alu_out = Rn - Rm;
+		cpsr.N = getBit(alu_out, 31);
+		cpsr.Z = (alu_out == 0);
+		cpsr.C = !borrowFrom(Rn, Rm);
+		cpsr.V = overflowFrom(Rn, -Rm);
+	}
+	else {
+		// CMP 3
+		uint32_t Rn = readRegister((getBit(opcode, 7) << 4) | getBits(opcode, 0, 3));
+		uint32_t Rm = readRegister(getBits(opcode, 3, 4));
+		uint32_t alu_out = Rn - Rm;
+		cpsr.N = getBit(alu_out, 31);
+		cpsr.Z = (alu_out == 0);
+		cpsr.C = !borrowFrom(Rn, Rm);
+		cpsr.V = overflowFrom(Rn, -Rm);
+	}
+	return 0;
+}
+
+uint32_t ARM7TDMI::EOR_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, readRegister(Rd) ^ readRegister(getBits(opcode, 3, 3)));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::LSL_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	if (getBits(opcode, 11, 5) == 0) {
+		uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+		uint32_t immed5 = getBits(opcode, 6, 5);
+		if (immed5 == 0)
+			writeRegister(Rd, Rm_val);
+		else {
+			cpsr.C = getBit(Rm_val, 32 - immed5);
+			writeRegister(getBits(opcode, 0, 3), Rm_val << immed5);
+		}
+	} else if (getBits(opcode, 11, 5) == 0b01000) {
+		uint32_t Rs7_0 = getBits(readRegister(getBits(opcode, 3, 3)), 0, 8);
+		if (Rs7_0 == 0) {}
+		else if (Rs7_0 < 32) {
+			cpsr.C = getBit(readRegister(Rd), 32 - Rs7_0);
+			writeRegister(Rd, readRegister(Rd) << Rs7_0);
+		}
+		else if (Rs7_0 == 32) {
+			cpsr.C = getBit(readRegister(Rd), 0);
+			writeRegister(Rd, 0);
+		}
+		else {
+			cpsr.C = 0;
+			writeRegister(Rd, 0);
+		}
+	}
+	else throw std::runtime_error("Encoding does not match any of LSL");
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::LSR_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	if (getBits(opcode, 11, 5) == 0b00001) {
+		uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+		uint32_t immed5 = getBits(opcode, 6, 5);
+		if (immed5 == 0) {
+			cpsr.C = getBit(readRegister(Rd), 31);
+			writeRegister(Rd, 0);
+		}
+		else {
+			cpsr.C = getBit(readRegister(Rd), immed5 - 1);
+			writeRegister(getBits(opcode, 0, 3), Rm_val >> immed5);
+		}
+	} else if (getBits(opcode, 11, 5) == 0b01000) {
+		uint32_t Rs7_0 = getBits(readRegister(getBits(opcode, 3, 3)), 0, 8);
+		if (Rs7_0 == 0) {}
+		else if (Rs7_0 < 32) {
+			cpsr.C = getBit(readRegister(Rd), Rs7_0 - 1);
+			writeRegister(Rd, readRegister(Rd) >> Rs7_0);
+		}
+		else if (Rs7_0 == 32) {
+			cpsr.C = getBit(readRegister(Rd), 31);
+			writeRegister(Rd, 0);
+		}
+		else {
+			cpsr.C = 0;
+			writeRegister(Rd, 0);
+		}
+	}
+	else throw std::runtime_error("Encoding does not match any of LSL");
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::MOV_TH()
+{
+	uint32_t Rd = getBits(opcode, 8, 3);
+	if (getBits(opcode, 11, 5) == 0b00100) {
+		writeRegister(Rd, getBits(opcode, 0, 8));
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 11, 5) == 0b00011) {
+		writeRegister(Rd, readRegister(getBits(opcode, 3, 3)));
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+		cpsr.C = cpsr.V = 0;
+	}
+	else if (getBits(opcode, 11, 5) == 0b01000) {
+		writeRegister((getBit(opcode, 7) << 4) | Rd, 
+				readRegister(getBits(opcode, 3, 4)));
+	}
+	else throw std::runtime_error("Encoding does not match any of MOV");
+	return 0;
+}
+
+uint32_t ARM7TDMI::MUL_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, readRegister(getBits(opcode, 3, 3)) * readRegister(Rd));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	//cpsr.C unpredictable
+	return 0;
+}
+
+uint32_t ARM7TDMI::MVN_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, ~readRegister(getBits(opcode, 3, 3)));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::NEG_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+	writeRegister(Rd, -Rm_val);
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	cpsr.C = !borrowFrom(0, Rm_val);
+	cpsr.V = overflowFrom(0, -Rm_val);
+	return 0;
+}
+
+uint32_t ARM7TDMI::ORR_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	writeRegister(Rd, readRegister(Rd) | readRegister(getBits(opcode, 3, 3)));
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::ROR_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	uint32_t Rs7_0 = getBits(readRegister(getBits(opcode, 3, 3)), 0, 8);
+	uint32_t Rs4_0 = getBits(readRegister(getBits(opcode, 3, 3)), 0, 5);
+	if (Rs7_0 == 0) {}
+	else if (Rs4_0 == 0) {
+		cpsr.C = getBit(readRegister(Rd), 31);
+	}
+	else {
+		cpsr.C = getBit(readRegister(Rd), Rs4_0 - 1);
+		writeRegister(Rd, rotateRight(readRegister(Rd), Rs4_0));
+	}
+	cpsr.N = getBit(readRegister(Rd), 31);
+	cpsr.Z = (readRegister(Rd) == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::SBC_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	uint32_t Rm_val = readRegister(getBits(opcode, 3, 3));
+	writeRegister(Rd, readRegister(Rd) - Rm_val - !cpsr.C);
+	uint32_t Rd_val = readRegister(Rd);
+	cpsr.N = getBit(Rd_val, 31);
+	cpsr.Z = (Rd_val == 0);
+	cpsr.V = overflowFrom(Rd_val - Rm_val, -!cpsr.C);
+	cpsr.C = !borrowFrom(Rd_val - Rm_val, !cpsr.C);
+	return 0;
+}
+
+uint32_t ARM7TDMI::SUB_TH()
+{
+	uint32_t Rd = getBits(opcode, 0, 3);
+	if (getBits(opcode, 9, 7) == 0b0001111) {
+		uint32_t immed3 = getBits(opcode, 6, 3);
+		uint32_t Rn_val = readRegister(getBits(opcode, 3, 3));
+		writeRegister(Rd, Rn_val - immed3);
+		cpsr.C = !borrowFrom(Rn_val, immed3);
+		cpsr.V = overflowFrom(Rn_val, -immed3);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 11, 5) == 0b00111) {
+		uint32_t immed8 = getBits(opcode, 0, 8);
+		writeRegister(Rd, readRegister(Rd) - immed8);
+		cpsr.C = !borrowFrom(readRegister(Rd), immed8);
+		cpsr.V = overflowFrom(readRegister(Rd), -immed8);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 9, 7) == 0b0001101) {
+		uint32_t Rn_val = readRegister(getBits(opcode, 3, 3));
+		uint32_t Rm_val = readRegister(getBits(opcode, 6, 3));
+		writeRegister(Rd, Rn_val - Rm_val);
+		cpsr.C = !borrowFrom(Rn_val, Rm_val);
+		cpsr.V = overflowFrom(Rn_val, -Rm_val);
+		cpsr.N = getBit(readRegister(Rd), 31);
+		cpsr.Z = (readRegister(Rd) == 0);
+	}
+	else if (getBits(opcode, 9, 7) == 0b1011000) {
+		uint32_t immed7 = getBits(opcode, 0, 7);
+		writeRegister(13, readRegister(13) - (immed7 << 2));
+	}
+	else throw std::runtime_error("Encoding does not match any of SUB");
+	return 0;
+}
+
+uint32_t ARM7TDMI::TST_TH()
+{
+	uint32_t alu_out = readRegister(getBits(opcode, 0, 3)) & readRegister(getBits(opcode, 3, 3));
+	cpsr.N = getBit(alu_out, 31);
+	cpsr.Z = (alu_out == 0);
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDR_TH()
+{
+	if (getBits(opcode, 11, 5) == 0b01101) {
+		uint32_t addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5)*4;
+		if (getBits(addr, 0, 2) == 0)
+			writeRegister(getBits(opcode, 0, 3), read(addr, 32));
+	}
+	else if (getBits(opcode, 11, 5) == 0b01011) {
+		uint32_t addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+		if (getBits(addr, 0, 2) == 0)
+			writeRegister(getBits(opcode, 0, 3), read(addr, 32));
+	}
+	else if (getBits(opcode, 11, 5) == 0b01001) {
+		writeRegister(getBits(opcode, 8, 3), read((getBits(readRegister(15), 2, 30) << 2) + getBits(opcode, 0, 8)*4, 32));
+	}
+	else if (getBits(opcode, 11, 5) == 0b10011) {
+		uint32_t addr = readRegister(13) + getBits(opcode, 0, 8)*4;
+		if (getBits(addr, 0, 2) == 0)
+			writeRegister(getBits(opcode, 8, 3), read(addr, 32));
+	}
+	else throw std::runtime_error("Encoding does not match any of LDR");
+	// clock cycle is not correct
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDRB_TH()
+{
+	uint32_t addr;
+	if (getBits(opcode, 11, 5) == 0b01111) 
+		addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5);
+	else if (getBits(opcode, 11, 5) == 0b01011) 
+		addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	else throw std::runtime_error("Encoding does not match any of LDRB");
+	writeRegister(getBits(opcode, 0, 3), read(addr, 8));
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDRH_TH()
+{
+	uint32_t addr;
+	if (getBits(opcode, 11, 5) == 0b10001) 
+		addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5)*2;
+	else if (getBits(opcode, 11, 5) == 0b01011)
+		addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	else throw std::runtime_error("Encoding does not match any of LDRH");
+	writeRegister(getBits(opcode, 0, 3), read(addr, 16));
+	// did not handle unpredictable
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDRSB_TH()
+{
+	uint32_t addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	writeRegister(getBits(opcode, 0, 3), signExtend(read(addr, 8), 8));
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDRSH_TH()
+{
+	uint32_t addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	writeRegister(getBits(opcode, 0, 3), signExtend(read(addr, 16), 16));
+	// did not handle unpredictable
+	return 0;
+}
+
+uint32_t ARM7TDMI::STR_TH()
+{
+	uint32_t addr;
+	if (getBits(opcode, 11, 5) == 0b01100) {
+		addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5)*4;
+	}
+	else if (getBits(opcode, 11, 5) == 0b01010) {
+		addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	}
+	else if (getBits(opcode, 11, 5) == 0b10010) {
+		addr = readRegister(13) + getBits(opcode, 0, 8)*4;
+	}
+	else throw std::runtime_error("Encoding does not match any of STR");
+	if (getBits(addr, 0, 2) == 0)
+		write(addr, readRegister(getBits(opcode, 0, 3)), 32);
+	// clock cycle is not correct
+	return 0;
+}
+
+uint32_t ARM7TDMI::STRB_TH()
+{
+	uint32_t addr;
+	if (getBits(opcode, 11, 5) == 0b01110) 
+		addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5);
+	else if (getBits(opcode, 11, 5) == 0b01010) 
+		addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	else throw std::runtime_error("Encoding does not match any of STRB");
+	write(addr, getBits(readRegister(getBits(opcode, 0, 3)), 0, 8), 8);
+	return 0;
+}
+
+uint32_t ARM7TDMI::STRH_TH()
+{
+	uint32_t addr;
+	if (getBits(opcode, 11, 5) == 0b10000) 
+		addr = readRegister(getBits(opcode, 3, 3)) + getBits(opcode, 6, 5)*2;
+	else if (getBits(opcode, 11, 5) == 0b01010)
+		addr = readRegister(getBits(opcode, 3, 3)) + readRegister(getBits(opcode, 6, 3));
+	else throw std::runtime_error("Encoding does not match any of STRH");
+	write(addr, getBits(readRegister(getBits(opcode, 0, 3)), 0, 16), 16);
+	return 0;
+}
+
+uint32_t ARM7TDMI::LDMIA_TH()
+{
+	uint32_t Rn = getBits(opcode, 8, 3);
+	uint32_t startAddr = readRegister(Rn);
+	uint32_t addr = startAddr;
+	auto numSetBits = 0;
+	for (auto i = 0; i <= 7; ++i) {
+		if (getBit(opcode, i)) {
+			writeRegister(i, read(addr, 32)); 
+			addr += 4;
+			++numSetBits;
+		}
+	}
+	writeRegister(Rn, readRegister(Rn) + numSetBits*4);
+	return 0;
+}
+
+uint32_t ARM7TDMI::STMIA_TH()
+{
+	uint32_t Rn = getBits(opcode, 8, 3);
+	uint32_t startAddr = readRegister(Rn);
+	uint32_t addr = startAddr;
+	uint32_t numSetBits = 0;
+	for (auto i = 0; i <= 7; ++i) {
+		if (getBit(opcode, i)) {
+			write(addr, readRegister(i), 32);
+			addr += 4;
+			++numSetBits;
+		}
+	}
+	writeRegister(Rn, readRegister(Rn) + numSetBits*4);
+	return 0;
+}
+
+uint32_t ARM7TDMI::POP_TH()
+{
+	uint32_t startAddr = readRegister(13);
+	uint32_t addr = startAddr;
+	for (auto i = 0; i <= 7; ++i) {
+		if (getBit(opcode, i)) {
+			writeRegister(i, read(addr, 32));
+			addr += 4;
+		}
+	}
+	if (getBit(opcode, 8)) {
+		pc = read(addr, 4) & 0xfffffffe;
+		addr += 4;
+	}
+	writeRegister(13, addr);
+	return 0;
+}
+
+uint32_t ARM7TDMI::PUSH_TH()
+{
+	uint32_t startAddr = readRegister(13) - 
+		4*(std::bitset<8>(getBits(opcode, 0, 8)).count()+getBit(opcode, 8));
+	uint32_t addr = startAddr;
+	for (auto i = 0; i <= 7; ++i) {
+		if (getBit(opcode, i)) {
+			write(addr, readRegister(i), 32);
+			addr += 4;
+		}
+	}
+	if (getBit(opcode, 8)) {
+		write(addr, readRegister(14), 32);
+		addr += 4;
+	}
+	writeRegister(13, startAddr);
+	return 0;
+}
+
+uint32_t ARM7TDMI::BKPT_TH()
+{
+	setMode(ABT);
+	writeRegister(14, pc + 4);
+	setSPSR(cpsr.reg);
+	cpsr.T = 0;
+	cpsr.I = 1;
+	pc = 0x0000000C; // this is not correct...
+	return 0;
+}
+
+uint32_t ARM7TDMI::SWI_TH()
+{
+	writeRegister(14, readRegister(15) - 2);
+	setMode(SVC);
+	setSPSR(cpsr.reg);
+	cpsr.T = 0;
+	cpsr.I = 1;
+	pc = 0x00000008; //wrong...
+	return 0;
 }
 
 void ARM7TDMI::disassembleARM(const std::vector<uint32_t>& mem)
@@ -2074,9 +2708,67 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, co
 	return str_instruction.str();
 }
 
+bool ARM7TDMI::borrowFrom(uint32_t x, uint32_t y)
+{
+	return false;
+}
+
 ARM7TDMI::Instruction ARM7TDMI::getInstruction(uint32_t opc)
 {
-	return instruction_lookup[getBits(opc, 20, 8)][getBits(opc, 4, 4)];
+	if (!cpsr.T)
+		return instruction_lookup[getBits(opc, 20, 8)][getBits(opc, 4, 4)];
+	
+	uint32_t bits11_8 = getBits(opcode, 8, 4);
+	switch (getBits(opcode, 12, 4)) {
+	case 0:
+		if (bits11_8 <= 7) 
+			return {"LSL", &ARM7TDMI::LSL_TH, &XXX};
+		else 
+			return {"LSR", &ARM7TDMI::LSR_TH, &XXX};
+		break;
+	case 1:
+		if (bits11_8 <= 7) 
+			return {"ASR", &ARM7TDMI::LSL_TH, &XXX};
+		else if (bits11_8 <= 9) 
+			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+		else if (bits11_8 <= 11) 
+			return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
+		else if (bits11_8 <= 13) 
+			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+		else 
+			return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	case 4:
+		break;
+	case 5:
+		break;
+	case 6:
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	case 9:
+		break;
+	case 10:
+		break;
+	case 11:
+		break;
+	case 12:
+		break;
+	case 13:
+		break;
+	case 14:
+		break;
+	case 15:
+		break;
+	default:
+		break;
+	}
 }
 
 std::string ARM7TDMI::parseShiftIMM(const uint32_t instruction32) {

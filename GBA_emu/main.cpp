@@ -224,9 +224,11 @@ private:
 
 int main() {
 	// init some asm code
-	bus.iwram[0] = 0xe3a00005;
-	bus.iwram[1] = 0xe3a0100a;
-	bus.iwram[2] = 0xe0800001;
+	bus.iwram[0] = 0xe3b00005;
+	bus.iwram[1] = 0xe3b0100a;
+	bus.iwram[2] = 0xe0900001;
+	bus.iwram[3] = 0xe0500001;
+	bus.iwram[4] = 0xe0500001;
 
 	Graphic graphic;
 	if (graphic.Construct(SCREEN_WIDTH, SCREEN_HEIGHT, 1, 1))

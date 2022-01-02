@@ -5,6 +5,7 @@
 #include <array>
 #include <bitset>
 #include <sstream>
+#include <unordered_map>
 
 #include "Utils.h"
 
@@ -157,25 +158,55 @@ public:
 	//nothing
 	uint32_t NOP();
 
+	//Thumb instructions
+	uint32_t B_TH(); uint32_t BL_TH();
+	uint32_t BX_TH(); 
+
+	uint32_t ADC_TH(); uint32_t ADD_TH(); uint32_t AND_TH();
+	uint32_t ASR_TH(); uint32_t BIC_TH(); uint32_t CMN_TH();
+	uint32_t CMP_TH(); uint32_t EOR_TH(); uint32_t LSL_TH();
+	uint32_t LSR_TH(); uint32_t MOV_TH(); uint32_t MUL_TH();
+	uint32_t MVN_TH(); uint32_t NEG_TH(); uint32_t ORR_TH();
+	uint32_t ROR_TH(); uint32_t SBC_TH(); uint32_t SUB_TH();
+	uint32_t TST_TH();
+
+	uint32_t LDR_TH(); uint32_t LDRB_TH(); uint32_t LDRH_TH();
+	uint32_t LDRSB_TH(); uint32_t LDRSH_TH();
+	uint32_t STR_TH(); uint32_t STRB_TH(); uint32_t STRH_TH();
+
+	uint32_t LDMIA_TH(); uint32_t STMIA_TH();
+	uint32_t POP_TH(); uint32_t PUSH_TH();
+
+	uint32_t BKPT_TH(); uint32_t SWI_TH();
+
 public:
 	std::array<uint32_t, 12> r; //r0-r12
 	uint32_t sp = 0; //r13 - Stack Pointer
 	uint32_t lr = 0; //r14 - Link Ptr
 	uint32_t pc = 0; //r15 - Prog Counter
 
-	std::array<uint32_t, 5> r_fiq; //banked registers of fiq mode
-	std::array<uint32_t, 5> sp_banked; //banked r13, access by modes 2-6
-	std::array<uint32_t, 5> lr_banked; //banked r14, access by modes 2-6
+	std::array<uint32_t, 5> r_fiq; //banked r8-r12 of fiq mode
+	std::array<uint32_t, 5> sp_banked; //banked r13, access by modes 1-5
+	std::array<uint32_t, 5> lr_banked; //banked r14, access by modes 1-5
 	
 	/*Modes:
 		0 - User
-		1 - System
-		2 - svc
-		3 -	abt
-		4 - und
-		5 - irq
-		6 - fiq*/
+		1 - FIQ
+		2 - IRQ
+		3 -	svc
+		4 - abt
+		5 - und
+		6 - sys*/
+	enum MODE {USR, FIQ, IRQ, SVC, ABT, UND, SYS};
+	std::unordered_map<uint8_t, uint8_t> modeMap = {{USR, 0},
+													{FIQ, 0b10001},
+													{IRQ, 0b10010},
+													{SVC, 0b10011},
+													{ABT, 0b10111},
+													{UND, 0b11011},
+													{SYS, 0b11111}};
 	uint8_t mode = 0;
+	void setMode(uint8_t m);
 
 	uint32_t readRegister(uint32_t n, uint8_t force_mode);
 	uint32_t readRegister(uint32_t n);
@@ -185,7 +216,6 @@ public:
 
 	std::string getRegisterName(uint32_t);
 
-	//std::array<uint32_t, 5> spsr; //Saved Prog Status Register
 	union ProgStatReg {
 		struct
 		{
@@ -236,6 +266,11 @@ public:
 	std::string disassembleARMInstruction(const uint32_t instruction, const uint32_t addr);
 
 private:
+	bool borrowFrom(uint32_t x, uint32_t y) {return y > x;} // x - y
+	bool overflowFrom(uint32_t x, uint32_t y) { // x + y
+		return (x >> 31) == (y >> 31) && ((x + y) >> 31) != (x >> 31);
+	}
+	bool carryFrom(uint32_t x, uint32_t y) {return x+y < x;}
 	Instruction getInstruction(uint32_t opc);
 	std::string parseShiftIMM(const uint32_t instruction);
 };
