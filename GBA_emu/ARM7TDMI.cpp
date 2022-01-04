@@ -1792,16 +1792,6 @@ uint32_t ARM7TDMI::BL_TH()
 			pc = lr + (offset11 << 1);
 			lr = (pc + 2) | (uint32_t) 1;
 		}
-		else if (getBits(opcode, 11, 2) == 0b01) {
-			pc = (lr + (offset11 << 1)) | 0xfffffffc;
-			lr = (pc + 2) | 1;
-			cpsr.T = 0;
-		}
-	}
-	else { // BLX 2
-		lr = (pc + 2) | (uint32_t) 1;
-		cpsr.T = getBit(readRegister(3, 3), 0);
-		pc = getBits(readRegister(3, 3), 1, 31) << 1;
 	}
 	return 0;
 }
@@ -2376,17 +2366,6 @@ uint32_t ARM7TDMI::PUSH_TH()
 	return 0;
 }
 
-uint32_t ARM7TDMI::BKPT_TH()
-{
-	setMode(ABT);
-	writeRegister(14, pc + 4);
-	setSPSR(cpsr.reg);
-	cpsr.T = 0;
-	cpsr.I = 1;
-	pc = 0x0000000C; // this is not correct...
-	return 0;
-}
-
 uint32_t ARM7TDMI::SWI_TH()
 {
 	writeRegister(14, readRegister(15) - 2);
@@ -2697,10 +2676,6 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, co
 							<< (getBit(instruction32, 23) ? "" : "-")
 							<< getRegisterName(getBits(instruction32, 0, 4));
 			break;
-		case AddrModeName::m4_IA:
-		case AddrModeName::m4_IB:
-		case AddrModeName::m4_DA:
-		case AddrModeName::m4_DB:
 		default:
 			break;
 		}
@@ -2708,26 +2683,22 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, co
 	return str_instruction.str();
 }
 
-bool ARM7TDMI::borrowFrom(uint32_t x, uint32_t y)
-{
-	return false;
-}
-
 ARM7TDMI::Instruction ARM7TDMI::getInstruction(uint32_t opc)
 {
-	if (!cpsr.T)
+	if (!cpsr.T) // ARM mode
 		return instruction_lookup[getBits(opc, 20, 8)][getBits(opc, 4, 4)];
 	
+	// else Thumb mode
 	uint32_t bits11_8 = getBits(opcode, 8, 4);
 	switch (getBits(opcode, 12, 4)) {
 	case 0:
-		if (bits11_8 <= 7) 
+		if (bits11_8 <= 7)
 			return {"LSL", &ARM7TDMI::LSL_TH, &XXX};
-		else 
+		else
 			return {"LSR", &ARM7TDMI::LSR_TH, &XXX};
 		break;
 	case 1:
-		if (bits11_8 <= 7) 
+		if (bits11_8 <= 7)
 			return {"ASR", &ARM7TDMI::LSL_TH, &XXX};
 		else if (bits11_8 <= 9) 
 			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
@@ -2735,36 +2706,154 @@ ARM7TDMI::Instruction ARM7TDMI::getInstruction(uint32_t opc)
 			return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
 		else if (bits11_8 <= 13) 
 			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
-		else 
+		else
 			return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
 		break;
 	case 2:
+		if (bits11_8 <= 7)
+			return {"MOV", &ARM7TDMI::MOV_TH, &XXX};
+		else
+			return {"CMP", &ARM7TDMI::CMP_TH, &XXX};
 		break;
 	case 3:
+		if (bits11_8 <= 7)
+			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+		else
+			return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
 		break;
 	case 4:
+		if (bits11_8 <= 3) {
+			uint32_t bits7_6 = getBits(opc, 6, 2);
+			switch (getBits(opc, 8, 2)) {
+			case 0:
+				if (bits7_6 == 0)
+					return {"AND", &ARM7TDMI::AND_TH, &XXX};
+				else if (bits7_6 == 1)
+					return {"EOR", &ARM7TDMI::EOR_TH, &XXX};
+				else if (bits7_6 == 2)
+					return {"LSL", &ARM7TDMI::LSL_TH, &XXX};
+				else if (bits7_6 == 3)
+					return {"LSR", &ARM7TDMI::LSR_TH, &XXX};
+				break;
+			case 1:
+				if (bits7_6 == 0)
+					return {"ASR", &ARM7TDMI::ASR_TH, &XXX};
+				else if (bits7_6 == 1)
+					return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+				else if (bits7_6 == 2)
+					return {"SUB", &ARM7TDMI::SUB_TH, &XXX};
+				else if (bits7_6 == 3)
+					return {"ROR", &ARM7TDMI::ROR_TH, &XXX};
+				break;
+			case 2:
+				if (bits7_6 == 0)
+					return {"TST", &ARM7TDMI::TST_TH, &XXX};
+				else if (bits7_6 == 1)
+					return {"NEG", &ARM7TDMI::NEG_TH, &XXX};
+				else if (bits7_6 == 2)
+					return {"CMP", &ARM7TDMI::CMP_TH, &XXX};
+				else if (bits7_6 == 3)
+					return {"CMN", &ARM7TDMI::CMN_TH, &XXX};
+				break;
+			case 3:
+				if (bits7_6 == 0)
+					return {"ORR", &ARM7TDMI::ORR_TH, &XXX};
+				else if (bits7_6 == 1)
+					return {"MUL", &ARM7TDMI::MUL_TH, &XXX};
+				else if (bits7_6 == 2)
+					return {"BIC", &ARM7TDMI::BIC_TH, &XXX};
+				else if (bits7_6 == 3)
+					return {"MVN", &ARM7TDMI::MVN_TH, &XXX};
+				break;
+			default:
+				throw std::runtime_error("Invalid instruction encoding");
+			}
+		}
+		else if (bits11_8 == 4)
+			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+		else if (bits11_8 == 5)
+			return {"CMP", &ARM7TDMI::CMP_TH, &XXX};
+		else if (bits11_8 == 6)
+			return {"MOV", &ARM7TDMI::MOV_TH, &XXX};
+		else if (bits11_8 == 7)
+			return {"BX", &ARM7TDMI::BX_TH, &XXX};
+		else 
+			return {"LDR", &ARM7TDMI::LDR_TH, &XXX};
 		break;
 	case 5:
+		if (bits11_8 <= 1)
+			return {"STR", &ARM7TDMI::STR_TH, &XXX};
+		else if (bits11_8 <= 3)
+			return {"STRH", &ARM7TDMI::STRH_TH, &XXX};
+		else if (bits11_8 <= 5)
+			return {"STRB", &ARM7TDMI::STRB_TH, &XXX};
+		else if (bits11_8 <= 7)
+			return {"LDRSB", &ARM7TDMI::LDRSB_TH, &XXX};
+		else if (bits11_8 <= 9)
+			return {"LDR", &ARM7TDMI::LDR_TH, &XXX};
+		else if (bits11_8 <= 11)
+			return {"LDRH", &ARM7TDMI::LDRH_TH, &XXX};
+		else if (bits11_8 <= 13)
+			return {"LDRB", &ARM7TDMI::LDRB_TH, &XXX};
+		else
+			return {"LDRSH", &ARM7TDMI::LDRSH_TH, &XXX};
 		break;
 	case 6:
+		if (bits11_8 <= 7)
+			return {"STR", &ARM7TDMI::STR_TH, &XXX};
+		else
+			return {"LDR", &ARM7TDMI::LDR_TH, &XXX};
 		break;
 	case 7:
+		if (bits11_8 <= 7)
+			return {"STRB", &ARM7TDMI::STRB_TH, &XXX};
+		else
+			return {"LDRB", &ARM7TDMI::LDRB_TH, &XXX};
 		break;
 	case 8:
+		if (bits11_8 <= 7)
+			return {"STRH", &ARM7TDMI::STRH_TH, &XXX};
+		else
+			return {"LDRH", &ARM7TDMI::LDRH_TH, &XXX};
 		break;
 	case 9:
+		if (bits11_8 <= 7)
+			return {"STR", &ARM7TDMI::STR_TH, &XXX};
+		else
+			return {"LDR", &ARM7TDMI::LDR_TH, &XXX};
 		break;
 	case 10:
+		return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
 		break;
 	case 11:
+		if (bits11_8 == 0)
+			return {"ADD", &ARM7TDMI::ADD_TH, &XXX};
+		else if (bits11_8 == 4 || bits11_8 == 5)
+			return {"PUSH", &ARM7TDMI::PUSH_TH, &XXX};
+		else if (bits11_8 == 12 || bits11_8 == 13)
+			return {"POP", &ARM7TDMI::POP_TH, &XXX};
+		else throw std::runtime_error("Invalid instruction encoding");
 		break;
 	case 12:
+		if (bits11_8 <= 7)
+			return {"STMIA", &ARM7TDMI::STMIA_TH, &XXX};
+		else
+			return {"LDMIA", &ARM7TDMI::LDMIA_TH, &XXX};
 		break;
 	case 13:
+		if (bits11_8 <= 13)
+			return {"B", &ARM7TDMI::B_TH, &XXX};
+		else if (bits11_8 == 15)
+			return {"SWI", &ARM7TDMI::SWI_TH, &XXX};
+		else throw std::runtime_error("Invalid instruction encoding");
 		break;
 	case 14:
+		if (bits11_8 <= 7)
+			return {"B", &ARM7TDMI::B_TH, &XXX};
+		else throw std::runtime_error("Invalid instruction encoding");
 		break;
 	case 15:
+		return {"BL", &ARM7TDMI::BL_TH, &XXX};
 		break;
 	default:
 		break;

@@ -177,7 +177,7 @@ public:
 	uint32_t LDMIA_TH(); uint32_t STMIA_TH();
 	uint32_t POP_TH(); uint32_t PUSH_TH();
 
-	uint32_t BKPT_TH(); uint32_t SWI_TH();
+	 uint32_t SWI_TH();
 
 public:
 	std::array<uint32_t, 12> r; //r0-r12
@@ -264,6 +264,7 @@ public:
 public:
 	void disassembleARM(const std::vector<uint32_t> &mem);
 	std::string disassembleARMInstruction(const uint32_t instruction, const uint32_t addr);
+	std::string disassembleThumbInstruction(const uint32_t, const uint32_t);
 
 private:
 	bool borrowFrom(uint32_t x, uint32_t y) {return y > x;} // x - y
