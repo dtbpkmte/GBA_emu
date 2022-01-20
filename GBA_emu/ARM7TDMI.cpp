@@ -2683,6 +2683,12 @@ std::string ARM7TDMI::disassembleARMInstruction(const uint32_t instruction32, co
 	return str_instruction.str();
 }
 
+std::string ARM7TDMI::disassembleThumbInstruction(const uint32_t opc, const uint32_t addr)
+{
+	Instruction ins = getInstruction(opc);
+	return std::string();
+}
+
 ARM7TDMI::Instruction ARM7TDMI::getInstruction(uint32_t opc)
 {
 	if (!cpsr.T) // ARM mode

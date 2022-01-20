@@ -271,7 +271,7 @@ private:
 	bool overflowFrom(uint32_t x, uint32_t y) { // x + y
 		return (x >> 31) == (y >> 31) && ((x + y) >> 31) != (x >> 31);
 	}
-	bool carryFrom(uint32_t x, uint32_t y) {return x+y < x;}
+	bool carryFrom(uint32_t x, uint32_t y) {return x + y < x;}
 	Instruction getInstruction(uint32_t opc);
 	std::string parseShiftIMM(const uint32_t instruction);
 };
